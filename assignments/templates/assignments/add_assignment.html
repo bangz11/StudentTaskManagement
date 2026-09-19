@@ -1,0 +1,90 @@
+{% extends 'assignments/base.html' %}
+
+{% block title %}Add Assignment | StudentTask{% endblock %}
+
+{% block content %}
+
+<section class="auth-section">
+
+    <div class="auth-card">
+
+        <h1>Add Assignment</h1>
+
+        <p class="auth-subtitle">
+            Create a new assignment and keep track of your work.
+        </p>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <label for="title">Assignment Title</label>
+            <input
+                type="text"
+                id="title"
+                name="title"
+                placeholder="Enter assignment title"
+                required
+            >
+
+            <label for="subject">Subject</label>
+            <input
+                type="text"
+                id="subject"
+                name="subject"
+                placeholder="Enter subject"
+                required
+            >
+
+            <label for="description">Description</label>
+            <textarea
+                id="description"
+                name="description"
+                placeholder="Describe the assignment"
+                rows="5"
+            ></textarea>
+
+            <label for="due_date">Due Date</label>
+            <input
+                type="date"
+                id="due_date"
+                name="due_date"
+                required
+            >
+
+            <label for="priority">Priority</label>
+            <select id="priority" name="priority" required>
+                <option value="Low">Low</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="High">High</option>
+            </select>
+
+            <label for="status">Status</label>
+            <select id="status" name="status" required>
+                <option value="Pending" selected>Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+            </select>
+
+            <button type="submit" class="auth-button">
+                Add Assignment
+            </button>
+
+        </form>
+
+        <p class="auth-link">
+            <a href="{% url 'dashboard' %}">← Back to Dashboard</a>
+        </p>
+
+    </div>
+
+</section>
+
+{% endblock %}

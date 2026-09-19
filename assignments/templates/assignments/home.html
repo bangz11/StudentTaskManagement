@@ -1,0 +1,134 @@
+{% extends 'assignments/base.html' %}
+
+{% block title %}Home | StudentTask{% endblock %}
+
+{% block content %}
+
+<section class="hero">
+
+    <div class="container hero-content">
+
+        <div class="hero-text">
+
+            <p class="welcome">WELCOME TO STUDENTTASK</p>
+
+            <h1>
+                Manage Your Assignments.
+                <span>Stay Organized.</span>
+            </h1>
+
+            <p class="hero-description">
+                StudentTask helps students organize assignments,
+                track deadlines, manage priorities, and complete
+                their academic work more effectively.
+            </p>
+
+            <div class="hero-buttons">
+
+                <a href="/admin/" class="btn btn-primary">
+                    Get Started
+                </a>
+
+                <a href="#features" class="btn btn-secondary">
+                    Learn More
+                </a>
+
+            </div>
+
+        </div>
+
+        <div class="hero-card">
+
+            <div class="card-header">
+                <span>Today's Overview</span>
+                <span class="status-dot"></span>
+            </div>
+
+            <div class="overview-number">
+                0
+            </div>
+
+            <p>Assignments to manage</p>
+
+            <div class="progress">
+                <div class="progress-bar"></div>
+            </div>
+
+            <small>Stay focused and complete your tasks.</small>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section id="features" class="features">
+
+    <div class="container">
+
+        <div class="section-title">
+
+            <p class="welcome">WHY STUDENTTASK?</p>
+
+            <h2>
+                Everything You Need to Manage Your Work
+            </h2>
+
+            <p>
+                Keep your academic assignments organized in one place.
+            </p>
+
+        </div>
+
+
+        <div class="feature-grid">
+
+            <div class="feature-card">
+
+                <div class="feature-icon">✓</div>
+
+                <h3>Track Assignments</h3>
+
+                <p>
+                    Create and manage your assignments with important
+                    details such as subject, description and deadline.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">!</div>
+
+                <h3>Manage Priorities</h3>
+
+                <p>
+                    Set Low, Medium or High priority so you know
+                    which assignments need your attention first.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">→</div>
+
+                <h3>Track Progress</h3>
+
+                <p>
+                    Keep assignments organized using Pending,
+                    In Progress and Completed statuses.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

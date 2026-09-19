@@ -1,0 +1,84 @@
+{% extends 'assignments/base.html' %}
+
+{% block title %}Edit Assignment | StudentTask{% endblock %}
+
+{% block content %}
+
+<section class="auth-section">
+
+    <div class="auth-card">
+
+        <h1>Edit Assignment</h1>
+
+        <p class="auth-subtitle">
+            Update your assignment information.
+        </p>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <label for="title">Assignment Title</label>
+            <input
+                type="text"
+                id="title"
+                name="title"
+                value="{{ assignment.title }}"
+                required
+            >
+
+            <label for="subject">Subject</label>
+            <input
+                type="text"
+                id="subject"
+                name="subject"
+                value="{{ assignment.subject }}"
+                required
+            >
+
+            <label for="description">Description</label>
+            <textarea
+                id="description"
+                name="description"
+                rows="5"
+            >{{ assignment.description }}</textarea>
+
+            <label for="due_date">Due Date</label>
+            <input
+                type="date"
+                id="due_date"
+                name="due_date"
+                value="{{ assignment.due_date|date:'Y-m-d' }}"
+                required
+            >
+
+            <label for="priority">Priority</label>
+            <select id="priority" name="priority" required>
+                <option value="Low" {% if assignment.priority == 'Low' %}selected{% endif %}>Low</option>
+                <option value="Medium" {% if assignment.priority == 'Medium' %}selected{% endif %}>Medium</option>
+                <option value="High" {% if assignment.priority == 'High' %}selected{% endif %}>High</option>
+            </select>
+
+            <label for="status">Status</label>
+            <select id="status" name="status" required>
+                <option value="Pending" {% if assignment.status == 'Pending' %}selected{% endif %}>Pending</option>
+                <option value="In Progress" {% if assignment.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                <option value="Completed" {% if assignment.status == 'Completed' %}selected{% endif %}>Completed</option>
+            </select>
+
+            <button type="submit" class="auth-button">
+                Save Changes
+            </button>
+
+        </form>
+
+        <p class="auth-link">
+            <a href="{% url 'assignment_list' %}">
+                ? Back to Assignments
+            </a>
+        </p>
+
+    </div>
+
+</section>
+
+{% endblock %}

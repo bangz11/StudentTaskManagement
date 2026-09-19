@@ -1,0 +1,120 @@
+{% extends 'assignments/base.html' %}
+
+{% block title %}My Assignments | StudentTask{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-section">
+    <div class="container">
+
+        <div class="dashboard-header">
+            <div>
+                <p class="welcome">ASSIGNMENT MANAGEMENT</p>
+                <h1>My Assignments</h1>
+                <p>View and manage all your academic assignments.</p>
+            </div>
+
+            <a href="{% url 'add_assignment' %}" class="btn btn-primary">
+                + Add Assignment
+            </a>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if assignments %}
+
+            {% for assignment in assignments %}
+
+                <div class="dashboard-card" style="margin-bottom: 20px;">
+
+                    <h2>{{ assignment.title }}</h2>
+
+                    <p>
+                        <strong>Subject:</strong>
+                        {{ assignment.subject }}
+                    </p>
+
+                    <p>
+                        <strong>Due Date:</strong>
+                        {{ assignment.due_date }}
+                    </p>
+
+                    <p>
+                        <strong>Priority:</strong>
+                        {{ assignment.priority }}
+                    </p>
+
+                    <p>
+                        <strong>Status:</strong>
+                        {{ assignment.status }}
+                    </p>
+
+                    {% if assignment.description %}
+                        <p>
+                            <strong>Description:</strong>
+                            {{ assignment.description }}
+                        </p>
+                    {% endif %}
+
+                    <br>
+
+                    <a
+                        href="{% url 'edit_assignment' assignment.id %}"
+                        class="btn btn-primary"
+                    >
+                        Edit
+                    </a>
+
+                    <form
+                        method="POST"
+                        action="{% url 'delete_assignment' assignment.id %}"
+                        style="display:inline;"
+                    >
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            class="btn btn-secondary"
+                            onclick="return confirm('Are you sure you want to delete this assignment?');"
+                        >
+                            Delete
+                        </button>
+
+                    </form>
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="dashboard-actions">
+
+                <h2>No Assignments Yet</h2>
+
+                <p>
+                    You have not added any assignments yet.
+                    Start by creating your first assignment.
+                </p>
+
+                <a
+                    href="{% url 'add_assignment' %}"
+                    class="btn btn-primary"
+                >
+                    Add Your First Assignment
+                </a>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}
