@@ -1,6 +1,6 @@
-{% extends 'assignments/base.html' %}
+﻿{% extends 'assignments/base.html' %}
 
-{% block title %}Login | StudentTask{% endblock %}
+{% block title %}Login | StudyFlow{% endblock %}
 
 {% block content %}
 
@@ -8,10 +8,12 @@
 
     <div class="auth-card">
 
+        <p class="eyebrow">STUDYFLOW</p>
+
         <h1>Welcome Back</h1>
 
         <p class="auth-subtitle">
-            Login to manage your assignments.
+            Sign in to manage your assignments and stay organized.
         </p>
 
         {% if messages %}
@@ -32,6 +34,7 @@
                 id="username"
                 name="username"
                 placeholder="Enter your username"
+                autocomplete="username"
                 required
             >
 
@@ -42,11 +45,12 @@
                 id="password"
                 name="password"
                 placeholder="Enter your password"
+                autocomplete="current-password"
                 required
             >
 
             <button type="submit" class="auth-button">
-                Login
+                Sign In
             </button>
 
         </form>

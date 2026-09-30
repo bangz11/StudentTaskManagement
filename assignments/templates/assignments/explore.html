@@ -1,0 +1,117 @@
+{% extends 'assignments/base.html' %}
+
+{% block title %}Explore | StudyFlow{% endblock %}
+
+{% block content %}
+
+<section class="page-container">
+
+    <div class="page-header">
+        <div>
+            <p class="eyebrow">STUDYFLOW GUIDE</p>
+            <h1>Explore StudyFlow</h1>
+            <p>
+                Simple ways to organize your academic work,
+                manage deadlines, and stay consistent.
+            </p>
+        </div>
+
+        {% if user.is_authenticated %}
+            <a href="{% url 'dashboard' %}" class="btn btn-primary">
+                Go to Dashboard
+            </a>
+        {% else %}
+            <a href="{% url 'register' %}" class="btn btn-primary">
+                Get Started
+            </a>
+        {% endif %}
+    </div>
+
+    <div class="explore-grid">
+
+        <article class="explore-card">
+            <div class="explore-number">01</div>
+            <p class="eyebrow">PLANNING</p>
+            <h2>Plan Your Week</h2>
+            <p>
+                Start your week by checking upcoming assignments
+                and deciding what needs to be completed first.
+            </p>
+        </article>
+
+        <article class="explore-card">
+            <div class="explore-number">02</div>
+            <p class="eyebrow">PRIORITIES</p>
+            <h2>Prioritize Tasks</h2>
+            <p>
+                Use Low, Medium, and High priority to identify
+                assignments that need more attention.
+            </p>
+        </article>
+
+        <article class="explore-card">
+            <div class="explore-number">03</div>
+            <p class="eyebrow">PROGRESS</p>
+            <h2>Track Progress</h2>
+            <p>
+                Update assignments as Pending, In Progress,
+                or Completed so your workspace stays accurate.
+            </p>
+        </article>
+
+        <article class="explore-card">
+            <div class="explore-number">04</div>
+            <p class="eyebrow">ORGANIZATION</p>
+            <h2>Keep Subjects Organized</h2>
+            <p>
+                Add the subject to every assignment so you can
+                quickly understand where your academic work belongs.
+            </p>
+        </article>
+
+        <article class="explore-card">
+            <div class="explore-number">05</div>
+            <p class="eyebrow">DASHBOARD</p>
+            <h2>Review Your Dashboard</h2>
+            <p>
+                Use your dashboard to see assignment totals,
+                current progress, and upcoming work.
+            </p>
+        </article>
+
+        <article class="explore-card">
+            <div class="explore-number">06</div>
+            <p class="eyebrow">CONSISTENCY</p>
+            <h2>Stay Consistent</h2>
+            <p>
+                Keep your assignments updated regularly instead
+                of waiting until deadlines are close.
+            </p>
+        </article>
+
+    </div>
+
+    <section class="explore-cta">
+        <div>
+            <p class="eyebrow">READY TO START?</p>
+            <h2>Build a better study routine.</h2>
+            <p>
+                Use StudyFlow to keep your academic tasks
+                organized and easy to manage.
+            </p>
+        </div>
+
+        {% if user.is_authenticated %}
+            <a href="{% url 'add_assignment' %}" class="btn btn-primary">
+                Add Assignment
+            </a>
+        {% else %}
+            <a href="{% url 'register' %}" class="btn btn-primary">
+                Create Account
+            </a>
+        {% endif %}
+    </section>
+
+</section>
+
+{% endblock %}

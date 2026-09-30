@@ -1,16 +1,14 @@
 {% extends 'assignments/base.html' %}
 
-{% block title %}Home | StudentTask{% endblock %}
+{% block title %}Home | StudyFlow{% endblock %}
 
 {% block content %}
 
 <section class="hero">
-
     <div class="container hero-content">
 
         <div class="hero-text">
-
-            <p class="welcome">WELCOME TO STUDENTTASK</p>
+            <p class="welcome">WELCOME TO STUDYFLOW</p>
 
             <h1>
                 Manage Your Assignments.
@@ -18,58 +16,50 @@
             </h1>
 
             <p class="hero-description">
-                StudentTask helps students organize assignments,
-                track deadlines, manage priorities, and complete
-                their academic work more effectively.
+                StudyFlow helps students organize assignments,
+                track deadlines, manage priorities, and stay on top
+                of their academic work.
             </p>
 
             <div class="hero-buttons">
-
-                <a href="/admin/" class="btn btn-primary">
+                <a href="{% url 'register' %}" class="btn btn-primary">
                     Get Started
                 </a>
 
                 <a href="#features" class="btn btn-secondary">
                     Learn More
                 </a>
-
             </div>
-
         </div>
 
         <div class="hero-card">
-
             <div class="card-header">
-                <span>Today's Overview</span>
+                <span>Student Workspace</span>
                 <span class="status-dot"></span>
             </div>
 
-            <div class="overview-number">
-                0
-            </div>
+            <div class="overview-number">24/7</div>
 
-            <p>Assignments to manage</p>
+            <p>Keep your academic work organized.</p>
 
             <div class="progress">
                 <div class="progress-bar"></div>
             </div>
 
-            <small>Stay focused and complete your tasks.</small>
-
+            <small>
+                Plan your work, track your progress, and stay focused.
+            </small>
         </div>
 
     </div>
-
 </section>
-
 
 <section id="features" class="features">
 
     <div class="container">
 
         <div class="section-title">
-
-            <p class="welcome">WHY STUDENTTASK?</p>
+            <p class="welcome">WHY STUDYFLOW?</p>
 
             <h2>
                 Everything You Need to Manage Your Work
@@ -78,51 +68,42 @@
             <p>
                 Keep your academic assignments organized in one place.
             </p>
-
         </div>
-
 
         <div class="feature-grid">
 
             <div class="feature-card">
-
-                <div class="feature-icon">✓</div>
+                <div class="feature-icon">A</div>
 
                 <h3>Track Assignments</h3>
 
                 <p>
-                    Create and manage your assignments with important
-                    details such as subject, description and deadline.
+                    Create and manage assignments with important
+                    details such as subject, description, deadline,
+                    priority, and status.
                 </p>
-
             </div>
 
-
             <div class="feature-card">
-
-                <div class="feature-icon">!</div>
+                <div class="feature-icon">P</div>
 
                 <h3>Manage Priorities</h3>
 
                 <p>
-                    Set Low, Medium or High priority so you know
-                    which assignments need your attention first.
+                    Set Low, Medium, or High priority so you can
+                    quickly identify the work that needs attention.
                 </p>
-
             </div>
 
-
             <div class="feature-card">
-
-                <div class="feature-icon">→</div>
+                <div class="feature-icon">C</div>
 
                 <h3>Track Progress</h3>
 
                 <p>
                     Keep assignments organized using Pending,
-                    In Progress and Completed statuses.
+                    In Progress, and Completed statuses.
                 </p>
-
             </div>
 
         </div>

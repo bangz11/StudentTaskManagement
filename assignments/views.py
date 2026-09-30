@@ -282,3 +282,8 @@ def teacher_student_detail(request, user_id):
         'student': student,
         'assignments': assignments,
     })
+
+
+def explore(request):
+    return render(request, 'assignments/explore.html')
+

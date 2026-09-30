@@ -1,30 +1,131 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Student Details</title>
-</head>
-<body>
-    <h1>Student: {{ student.username }}</h1>
+{% extends 'assignments/base.html' %}
 
-    <p>Email: {{ student.email }}</p>
+{% block title %}{{ student.username }} | StudyFlow{% endblock %}
 
-    <h2>Assignments</h2>
+{% block content %}
 
-    {% for assignment in assignments %}
+<section class="page-container teacher-page">
+
+    <div class="page-header">
         <div>
-            <h3>{{ assignment.title }}</h3>
-            <p>Subject: {{ assignment.subject }}</p>
-            <p>Description: {{ assignment.description }}</p>
-            <p>Due Date: {{ assignment.due_date }}</p>
-            <p>Priority: {{ assignment.priority }}</p>
-            <p>Status: {{ assignment.status }}</p>
-        </div>
-    {% empty %}
-        <p>This student has no assignments.</p>
-    {% endfor %}
+            <p class="eyebrow">TEACHER PORTAL</p>
+            <h1>{{ student.username }}</h1>
 
-    <p>
-        <a href="{% url 'teacher_students' %}">Back to Students</a>
-    </p>
-</body>
-</html>
+            {% if student.email %}
+                <p>{{ student.email }}</p>
+            {% else %}
+                <p>No email address provided.</p>
+            {% endif %}
+        </div>
+
+        <a href="{% url 'teacher_students' %}" class="btn btn-secondary">
+            Back to Students
+        </a>
+    </div>
+
+    <section class="panel">
+
+        <div class="panel-header">
+            <div>
+                <p class="eyebrow">ACADEMIC WORK</p>
+                <h2>Assignments</h2>
+            </div>
+
+            <span class="status-badge">
+                {{ assignments|length }} Assignments
+            </span>
+        </div>
+
+        <div class="assignment-list">
+
+            {% for assignment in assignments %}
+
+                <article class="assignment-card">
+
+                    <div class="assignment-main">
+
+                        <div class="assignment-title-row">
+                            <div>
+                                <p class="eyebrow">{{ assignment.subject }}</p>
+                                <h2>{{ assignment.title }}</h2>
+                            </div>
+
+                            <span class="status-badge">
+                                {{ assignment.status }}
+                            </span>
+                        </div>
+
+                        {% if assignment.description %}
+                            <p class="assignment-description">
+                                {{ assignment.description }}
+                            </p>
+                        {% else %}
+                            <p class="assignment-description muted">
+                                No description provided.
+                            </p>
+                        {% endif %}
+
+                        <div class="assignment-details">
+
+                            <div>
+                                <span class="detail-label">Due Date</span>
+                                <strong>
+                                    {{ assignment.due_date|date:"M d, Y" }}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span class="detail-label">Priority</span>
+                                <strong>
+                                    {{ assignment.priority }}
+                                </strong>
+                            </div>
+
+                            <div>
+                                <span class="detail-label">Status</span>
+                                <strong>
+                                    {{ assignment.status }}
+                                </strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+            {% empty %}
+
+                <div class="empty-state">
+
+                    <div class="empty-state-content">
+
+                        <p class="eyebrow">NO ASSIGNMENTS</p>
+
+                        <h2>No Assignments Yet</h2>
+
+                        <p>
+                            This student has not added any assignments
+                            to StudyFlow yet.
+                        </p>
+
+                        <a
+                            href="{% url 'teacher_students' %}"
+                            class="btn btn-secondary"
+                        >
+                            Back to Students
+                        </a>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+</section>
+
+{% endblock %}

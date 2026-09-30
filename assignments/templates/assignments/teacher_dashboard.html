@@ -1,34 +1,147 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Teacher Dashboard</title>
-</head>
-<body>
-    <h1>Teacher Dashboard</h1>
+{% extends 'assignments/base.html' %}
 
-    <p>Total Students: {{ total_students }}</p>
-    <p>Total Assignments: {{ total_assignments }}</p>
-    <p>Completed Assignments: {{ completed_assignments }}</p>
-    <p>Pending Assignments: {{ pending_assignments }}</p>
+{% block title %}Teacher Dashboard | StudyFlow{% endblock %}
 
-    <h2>Students</h2>
+{% block content %}
 
-    {% for student in students %}
-        <p>
-            <a href="{% url 'teacher_student_detail' student.id %}">
-                {{ student.username }}
+<section class="page-container teacher-page">
+
+    <div class="teacher-banner">
+        <div>
+            <p class="eyebrow">TEACHER PORTAL</p>
+            <h1>Teacher Dashboard</h1>
+            <p>
+                Monitor students and review assignment progress
+                from one place.
+            </p>
+        </div>
+
+        <a href="{% url 'teacher_students' %}" class="btn btn-primary">
+            View Students
+        </a>
+    </div>
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <div class="stat-icon">S</div>
+            <div>
+                <span>Total Students</span>
+                <strong>{{ total_students }}</strong>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">A</div>
+            <div>
+                <span>Total Assignments</span>
+                <strong>{{ total_assignments }}</strong>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">C</div>
+            <div>
+                <span>Completed</span>
+                <strong>{{ completed_assignments }}</strong>
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <div class="stat-icon">P</div>
+            <div>
+                <span>Pending</span>
+                <strong>{{ pending_assignments }}</strong>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="content-grid">
+
+        <section class="panel">
+
+            <div class="panel-header">
+                <div>
+                    <p class="eyebrow">STUDENT MANAGEMENT</p>
+                    <h2>Students</h2>
+                </div>
+
+                <a href="{% url 'teacher_students' %}" class="text-link">
+                    View all
+                </a>
+            </div>
+
+            <div class="student-list">
+
+                {% for student in students %}
+
+                    <div class="student-row">
+
+                        <div class="student-avatar">
+                            {{ student.username|first|upper }}
+                        </div>
+
+                        <div class="student-info">
+                            <strong>{{ student.username }}</strong>
+
+                            {% if student.email %}
+                                <span>{{ student.email }}</span>
+                            {% else %}
+                                <span>No email provided</span>
+                            {% endif %}
+                        </div>
+
+                        <a
+                            href="{% url 'teacher_student_detail' student.id %}"
+                            class="btn btn-secondary"
+                        >
+                            View
+                        </a>
+
+                    </div>
+
+                {% empty %}
+
+                    <div class="empty-state">
+                        <h3>No students found</h3>
+                        <p>
+                            Student accounts will appear here after
+                            they register.
+                        </p>
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+        <aside class="panel quick-panel">
+
+            <p class="eyebrow">TEACHER TOOLS</p>
+
+            <h2>Quick Actions</h2>
+
+            <a href="{% url 'teacher_students' %}" class="quick-action">
+                <strong>Manage Students</strong>
+                <span>Search students and view their assignments.</span>
             </a>
-        </p>
-    {% empty %}
-        <p>No students found.</p>
-    {% endfor %}
 
-    <p>
-        <a href="{% url 'teacher_students' %}">View All Students</a>
-    </p>
+            <a href="{% url 'home' %}" class="quick-action">
+                <strong>View Website</strong>
+                <span>Open the main StudyFlow website.</span>
+            </a>
 
-    <p>
-        <a href="{% url 'logout' %}">Logout</a>
-    </p>
-</body>
-</html>
+            <a href="{% url 'logout' %}" class="quick-action">
+                <strong>Sign Out</strong>
+                <span>Securely leave the teacher portal.</span>
+            </a>
+
+        </aside>
+
+    </div>
+
+</section>
+
+{% endblock %}

@@ -1,87 +1,120 @@
-{% extends 'assignments/base.html' %}
+﻿{% extends 'assignments/base.html' %}
 
-{% block title %}Add Assignment | StudentTask{% endblock %}
+{% block title %}Add Assignment | StudyFlow{% endblock %}
 
 {% block content %}
 
-<section class="auth-section">
+<section class="page-container">
 
-    <div class="auth-card">
+    <div class="form-page">
 
-        <h1>Add Assignment</h1>
+        <div class="form-intro">
+            <p class="eyebrow">NEW ASSIGNMENT</p>
+            <h1>Create an Assignment</h1>
+            <p>
+                Add your academic work below and keep everything organized
+                in one place.
+            </p>
+        </div>
 
-        <p class="auth-subtitle">
-            Create a new assignment and keep track of your work.
-        </p>
+        <div class="form-card">
 
-        {% if messages %}
-            {% for message in messages %}
-                <div class="message">
-                    {{ message }}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="message">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+
+                <div class="form-grid">
+
+                    <div class="form-group full-width">
+                        <label for="title">Assignment Title</label>
+                        <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            placeholder="Example: Database Management Report"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input
+                            type="text"
+                            id="subject"
+                            name="subject"
+                            placeholder="Example: Information Technology"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="due_date">Due Date</label>
+                        <input
+                            type="date"
+                            id="due_date"
+                            name="due_date"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label for="description">Description</label>
+                        <textarea
+                            id="description"
+                            name="description"
+                            placeholder="Describe the assignment, requirements, or important notes..."
+                            rows="6"
+                        ></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="priority">Priority</label>
+                        <select id="priority" name="priority" required>
+                            <option value="Low">Low</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="High">High</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select id="status" name="status" required>
+                            <option value="Pending" selected>Pending</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+
                 </div>
-            {% endfor %}
-        {% endif %}
 
-        <form method="POST">
-            {% csrf_token %}
+                <div class="form-actions">
 
-            <label for="title">Assignment Title</label>
-            <input
-                type="text"
-                id="title"
-                name="title"
-                placeholder="Enter assignment title"
-                required
-            >
+                    <a
+                        href="{% url 'dashboard' %}"
+                        class="btn btn-secondary"
+                    >
+                        Cancel
+                    </a>
 
-            <label for="subject">Subject</label>
-            <input
-                type="text"
-                id="subject"
-                name="subject"
-                placeholder="Enter subject"
-                required
-            >
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                    >
+                        Create Assignment
+                    </button>
 
-            <label for="description">Description</label>
-            <textarea
-                id="description"
-                name="description"
-                placeholder="Describe the assignment"
-                rows="5"
-            ></textarea>
+                </div>
 
-            <label for="due_date">Due Date</label>
-            <input
-                type="date"
-                id="due_date"
-                name="due_date"
-                required
-            >
+            </form>
 
-            <label for="priority">Priority</label>
-            <select id="priority" name="priority" required>
-                <option value="Low">Low</option>
-                <option value="Medium" selected>Medium</option>
-                <option value="High">High</option>
-            </select>
-
-            <label for="status">Status</label>
-            <select id="status" name="status" required>
-                <option value="Pending" selected>Pending</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Completed">Completed</option>
-            </select>
-
-            <button type="submit" class="auth-button">
-                Add Assignment
-            </button>
-
-        </form>
-
-        <p class="auth-link">
-            <a href="{% url 'dashboard' %}">← Back to Dashboard</a>
-        </p>
+        </div>
 
     </div>
 

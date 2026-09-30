@@ -1,81 +1,113 @@
-{% extends 'assignments/base.html' %}
+﻿{% extends 'assignments/base.html' %}
 
-{% block title %}Edit Assignment | StudentTask{% endblock %}
+{% block title %}Edit Assignment | StudyFlow{% endblock %}
 
 {% block content %}
 
-<section class="auth-section">
+<section class="page-container">
 
-    <div class="auth-card">
+    <div class="form-page">
 
-        <h1>Edit Assignment</h1>
+        <div class="form-intro">
+            <p class="eyebrow">EDIT ASSIGNMENT</p>
+            <h1>Update Your Assignment</h1>
+            <p>
+                Make changes to your assignment information and save them
+                when you are finished.
+            </p>
+        </div>
 
-        <p class="auth-subtitle">
-            Update your assignment information.
-        </p>
+        <div class="form-card">
 
-        <form method="POST">
-            {% csrf_token %}
+            <form method="POST">
+                {% csrf_token %}
 
-            <label for="title">Assignment Title</label>
-            <input
-                type="text"
-                id="title"
-                name="title"
-                value="{{ assignment.title }}"
-                required
-            >
+                <div class="form-grid">
 
-            <label for="subject">Subject</label>
-            <input
-                type="text"
-                id="subject"
-                name="subject"
-                value="{{ assignment.subject }}"
-                required
-            >
+                    <div class="form-group full-width">
+                        <label for="title">Assignment Title</label>
+                        <input
+                            type="text"
+                            id="title"
+                            name="title"
+                            value="{{ assignment.title }}"
+                            required
+                        >
+                    </div>
 
-            <label for="description">Description</label>
-            <textarea
-                id="description"
-                name="description"
-                rows="5"
-            >{{ assignment.description }}</textarea>
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input
+                            type="text"
+                            id="subject"
+                            name="subject"
+                            value="{{ assignment.subject }}"
+                            required
+                        >
+                    </div>
 
-            <label for="due_date">Due Date</label>
-            <input
-                type="date"
-                id="due_date"
-                name="due_date"
-                value="{{ assignment.due_date|date:'Y-m-d' }}"
-                required
-            >
+                    <div class="form-group">
+                        <label for="due_date">Due Date</label>
+                        <input
+                            type="date"
+                            id="due_date"
+                            name="due_date"
+                            value="{{ assignment.due_date|date:'Y-m-d' }}"
+                            required
+                        >
+                    </div>
 
-            <label for="priority">Priority</label>
-            <select id="priority" name="priority" required>
-                <option value="Low" {% if assignment.priority == 'Low' %}selected{% endif %}>Low</option>
-                <option value="Medium" {% if assignment.priority == 'Medium' %}selected{% endif %}>Medium</option>
-                <option value="High" {% if assignment.priority == 'High' %}selected{% endif %}>High</option>
-            </select>
+                    <div class="form-group full-width">
+                        <label for="description">Description</label>
+                        <textarea
+                            id="description"
+                            name="description"
+                            rows="6"
+                            placeholder="Add details about this assignment..."
+                        >{{ assignment.description }}</textarea>
+                    </div>
 
-            <label for="status">Status</label>
-            <select id="status" name="status" required>
-                <option value="Pending" {% if assignment.status == 'Pending' %}selected{% endif %}>Pending</option>
-                <option value="In Progress" {% if assignment.status == 'In Progress' %}selected{% endif %}>In Progress</option>
-                <option value="Completed" {% if assignment.status == 'Completed' %}selected{% endif %}>Completed</option>
-            </select>
+                    <div class="form-group">
+                        <label for="priority">Priority</label>
+                        <select id="priority" name="priority" required>
+                            <option value="Low" {% if assignment.priority == 'Low' %}selected{% endif %}>Low</option>
+                            <option value="Medium" {% if assignment.priority == 'Medium' %}selected{% endif %}>Medium</option>
+                            <option value="High" {% if assignment.priority == 'High' %}selected{% endif %}>High</option>
+                        </select>
+                    </div>
 
-            <button type="submit" class="auth-button">
-                Save Changes
-            </button>
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select id="status" name="status" required>
+                            <option value="Pending" {% if assignment.status == 'Pending' %}selected{% endif %}>Pending</option>
+                            <option value="In Progress" {% if assignment.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                            <option value="Completed" {% if assignment.status == 'Completed' %}selected{% endif %}>Completed</option>
+                        </select>
+                    </div>
 
-        </form>
+                </div>
 
-        <p class="auth-link">
-            <a href="{% url 'assignment_list' %}">
-                ? Back to Assignments
-            </a>
-        </p>
+                <div class="form-actions">
+
+                    <a
+                        href="{% url 'assignment_list' %}"
+                        class="btn btn-secondary"
+                    >
+                        Back to Assignments
+                    </a>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                    >
+                        Save Changes
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
 
     </div>
 

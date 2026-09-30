@@ -1,37 +1,132 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Students</title>
-</head>
-<body>
-    <h1>Students</h1>
+{% extends 'assignments/base.html' %}
 
-    <form method="get">
-        <input
-            type="text"
-            name="search"
-            value="{{ search }}"
-            placeholder="Search students"
-        >
-        <button type="submit">Search</button>
-    </form>
+{% block title %}Students | StudyFlow{% endblock %}
 
-    {% for student in students %}
+{% block content %}
+
+<section class="page-container teacher-page">
+
+    <div class="page-header">
         <div>
-            <a href="{% url 'teacher_student_detail' student.id %}">
-                {{ student.username }}
-            </a>
-
-            {% if student.email %}
-                <span>{{ student.email }}</span>
-            {% endif %}
+            <p class="eyebrow">TEACHER PORTAL</p>
+            <h1>Students</h1>
+            <p>
+                Search student accounts and review their assignment progress.
+            </p>
         </div>
-    {% empty %}
-        <p>No students found.</p>
-    {% endfor %}
 
-    <p>
-        <a href="{% url 'teacher_dashboard' %}">Back to Teacher Dashboard</a>
-    </p>
-</body>
-</html>
+        <a href="{% url 'teacher_dashboard' %}" class="btn btn-secondary">
+            Teacher Dashboard
+        </a>
+    </div>
+
+    <section class="panel">
+
+        <div class="panel-header">
+            <div>
+                <p class="eyebrow">STUDENT DIRECTORY</p>
+                <h2>Find a Student</h2>
+            </div>
+        </div>
+
+        <form method="get" class="search-form">
+            <input
+                type="text"
+                name="search"
+                value="{{ search }}"
+                placeholder="Search by username or email"
+            >
+
+            <button type="submit" class="btn btn-primary">
+                Search
+            </button>
+
+            {% if search %}
+                <a href="{% url 'teacher_students' %}" class="btn btn-secondary">
+                    Clear
+                </a>
+            {% endif %}
+        </form>
+
+    </section>
+
+    <section class="panel">
+
+        <div class="panel-header">
+            <div>
+                <p class="eyebrow">REGISTERED USERS</p>
+                <h2>Student Accounts</h2>
+            </div>
+
+            <span class="status-badge">
+                {{ students|length }} Students
+            </span>
+        </div>
+
+        <div class="student-list">
+
+            {% for student in students %}
+
+                <div class="student-row">
+
+                    <div class="student-avatar">
+                        {{ student.username|first|upper }}
+                    </div>
+
+                    <div class="student-info">
+                        <strong>{{ student.username }}</strong>
+
+                        {% if student.email %}
+                            <span>{{ student.email }}</span>
+                        {% else %}
+                            <span>No email provided</span>
+                        {% endif %}
+                    </div>
+
+                    <a
+                        href="{% url 'teacher_student_detail' student.id %}"
+                        class="btn btn-primary"
+                    >
+                        View Assignments
+                    </a>
+
+                </div>
+
+            {% empty %}
+
+                <div class="empty-state">
+                    <div class="empty-state-content">
+                        <p class="eyebrow">NO RESULTS</p>
+
+                        <h2>No Students Found</h2>
+
+                        {% if search %}
+                            <p>
+                                No student account matched "{{ search }}".
+                                Try another username or email address.
+                            </p>
+
+                            <a
+                                href="{% url 'teacher_students' %}"
+                                class="btn btn-secondary"
+                            >
+                                Clear Search
+                            </a>
+                        {% else %}
+                            <p>
+                                Student accounts will appear here after
+                                students register.
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+</section>
+
+{% endblock %}

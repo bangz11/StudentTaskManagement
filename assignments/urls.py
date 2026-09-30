@@ -9,6 +9,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
 
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('explore/', views.explore, name='explore'),
 
     path('assignments/', views.assignment_list, name='assignment_list'),
     path('assignments/add/', views.add_assignment, name='add_assignment'),
@@ -22,3 +23,4 @@ urlpatterns = [
     path('api/assignments/', AssignmentListCreateAPI.as_view(), name='api_assignment_list'),
     path('api/assignments/<int:pk>/', AssignmentDetailAPI.as_view(), name='api_assignment_detail'),
 ]
+
