@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.utils import timezone
 from .models import Assignment
 
 
@@ -79,37 +80,70 @@ def dashboard(request):
 
     total_assignments = assignments.count()
     pending_assignments = assignments.filter(status='Pending').count()
+    in_progress_assignments = assignments.filter(status='In Progress').count()
     completed_assignments = assignments.filter(status='Completed').count()
+    high_priority_assignments = assignments.filter(priority='High').count()
 
-    recent_assignments = assignments.order_by('due_date')[:5]
+    today = timezone.localdate()
 
-    return render(
-        request,
-        'assignments/dashboard.html',
-        {
-            'total_assignments': total_assignments,
-            'pending_assignments': pending_assignments,
-            'completed_assignments': completed_assignments,
-            'recent_assignments': recent_assignments,
-        }
-    )
+    upcoming_assignments = assignments.filter(
+        due_date__gte=today
+    ).order_by('due_date')[:5]
+
+    return render(request, 'assignments/dashboard.html', {
+        'total_assignments': total_assignments,
+        'pending_assignments': pending_assignments,
+        'in_progress_assignments': in_progress_assignments,
+        'completed_assignments': completed_assignments,
+        'high_priority_assignments': high_priority_assignments,
+        'upcoming_assignments': upcoming_assignments,
+    })
 
 
 def assignment_list(request):
     if not request.user.is_authenticated:
         return redirect('login')
 
-    assignments = Assignment.objects.filter(
-        user=request.user
-    ).order_by('due_date')
+    assignments = Assignment.objects.filter(user=request.user)
 
-    return render(
-        request,
-        'assignments/assignment_list.html',
-        {
-            'assignments': assignments
-        }
-    )
+    search = request.GET.get('search', '').strip()
+    status = request.GET.get('status', '').strip()
+    priority = request.GET.get('priority', '').strip()
+    sort = request.GET.get('sort', 'due_date').strip()
+
+    if search:
+        assignments = assignments.filter(
+            title__icontains=search
+        ) | assignments.filter(
+            subject__icontains=search
+        ) | assignments.filter(
+            description__icontains=search
+        )
+
+    if status:
+        assignments = assignments.filter(status=status)
+
+    if priority:
+        assignments = assignments.filter(priority=priority)
+
+    if sort == 'title':
+        assignments = assignments.order_by('title')
+    elif sort == 'priority':
+        assignments = assignments.order_by('priority', 'due_date')
+    elif sort == 'status':
+        assignments = assignments.order_by('status', 'due_date')
+    elif sort == 'newest':
+        assignments = assignments.order_by('-created_at')
+    else:
+        assignments = assignments.order_by('due_date')
+
+    return render(request, 'assignments/assignment_list.html', {
+        'assignments': assignments,
+        'search': search,
+        'selected_status': status,
+        'selected_priority': priority,
+        'selected_sort': sort,
+    })
 
 
 def add_assignment(request):
@@ -130,10 +164,7 @@ def add_assignment(request):
         messages.success(request, 'Assignment added successfully.')
         return redirect('assignment_list')
 
-    return render(
-        request,
-        'assignments/add_assignment.html'
-    )
+    return render(request, 'assignments/add_assignment.html')
 
 
 def edit_assignment(request, assignment_id):
@@ -158,13 +189,9 @@ def edit_assignment(request, assignment_id):
         messages.success(request, 'Assignment updated successfully.')
         return redirect('assignment_list')
 
-    return render(
-        request,
-        'assignments/edit_assignment.html',
-        {
-            'assignment': assignment
-        }
-    )
+    return render(request, 'assignments/edit_assignment.html', {
+        'assignment': assignment
+    })
 
 
 def delete_assignment(request, assignment_id):

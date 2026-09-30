@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Assignment
 
+
 class AssignmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Assignment
@@ -14,5 +15,11 @@ class AssignmentSerializer(serializers.ModelSerializer):
             'priority',
             'status',
             'created_at',
+            'updated_at',
         ]
-        read_only_fields = ['id', 'user', 'created_at']
+        read_only_fields = [
+            'id',
+            'user',
+            'created_at',
+            'updated_at',
+        ]
