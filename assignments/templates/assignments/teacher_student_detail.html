@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Details</title>
+</head>
+<body>
+    <h1>Student: {{ student.username }}</h1>
+
+    <p>Email: {{ student.email }}</p>
+
+    <h2>Assignments</h2>
+
+    {% for assignment in assignments %}
+        <div>
+            <h3>{{ assignment.title }}</h3>
+            <p>Subject: {{ assignment.subject }}</p>
+            <p>Description: {{ assignment.description }}</p>
+            <p>Due Date: {{ assignment.due_date }}</p>
+            <p>Priority: {{ assignment.priority }}</p>
+            <p>Status: {{ assignment.status }}</p>
+        </div>
+    {% empty %}
+        <p>This student has no assignments.</p>
+    {% endfor %}
+
+    <p>
+        <a href="{% url 'teacher_students' %}">Back to Students</a>
+    </p>
+</body>
+</html>

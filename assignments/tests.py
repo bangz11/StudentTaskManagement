@@ -166,3 +166,74 @@ class AssignmentAPITests(TestCase):
         self.assertEqual(response.status_code, 404)
 
 
+
+class TeacherPortalTests(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+        self.teacher = User.objects.create_user(
+            username='teacher_test',
+            password='TeacherPass123!'
+        )
+        self.teacher.is_staff = True
+        self.teacher.save()
+
+        self.student = User.objects.create_user(
+            username='student_test',
+            password='StudentPass123!'
+        )
+
+        Assignment.objects.create(
+            user=self.student,
+            title='Test Assignment',
+            subject='Information Technology',
+            description='Teacher test assignment',
+            due_date=date.today(),
+            priority='High',
+            status='Pending'
+        )
+
+    def test_teacher_can_access_dashboard(self):
+        self.client.login(
+            username='teacher_test',
+            password='TeacherPass123!'
+        )
+
+        response = self.client.get('/teacher/dashboard/')
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_teacher_can_view_students(self):
+        self.client.login(
+            username='teacher_test',
+            password='TeacherPass123!'
+        )
+
+        response = self.client.get('/teacher/students/')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'student_test')
+
+    def test_teacher_can_view_student_assignments(self):
+        self.client.login(
+            username='teacher_test',
+            password='TeacherPass123!'
+        )
+
+        response = self.client.get(
+            f'/teacher/students/{self.student.id}/'
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Test Assignment')
+
+    def test_student_cannot_access_teacher_dashboard(self):
+        self.client.login(
+            username='student_test',
+            password='StudentPass123!'
+        )
+
+        response = self.client.get('/teacher/dashboard/')
+
+        self.assertEqual(response.status_code, 302)
+        self.assertIn('/login/', response.url)

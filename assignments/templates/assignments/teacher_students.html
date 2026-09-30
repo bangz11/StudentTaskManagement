@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Students</title>
+</head>
+<body>
+    <h1>Students</h1>
+
+    <form method="get">
+        <input
+            type="text"
+            name="search"
+            value="{{ search }}"
+            placeholder="Search students"
+        >
+        <button type="submit">Search</button>
+    </form>
+
+    {% for student in students %}
+        <div>
+            <a href="{% url 'teacher_student_detail' student.id %}">
+                {{ student.username }}
+            </a>
+
+            {% if student.email %}
+                <span>{{ student.email }}</span>
+            {% endif %}
+        </div>
+    {% empty %}
+        <p>No students found.</p>
+    {% endfor %}
+
+    <p>
+        <a href="{% url 'teacher_dashboard' %}">Back to Teacher Dashboard</a>
+    </p>
+</body>
+</html>

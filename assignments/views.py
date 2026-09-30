@@ -60,6 +60,8 @@ def login_view(request):
 
         if user is not None:
             login(request, user)
+            if user.is_staff:
+                return redirect('teacher_dashboard')
             return redirect('dashboard')
 
         messages.error(request, 'Invalid username or password.')
@@ -209,3 +211,74 @@ def delete_assignment(request, assignment_id):
         messages.success(request, 'Assignment deleted successfully.')
 
     return redirect('assignment_list')
+
+
+from django.contrib.auth.decorators import user_passes_test
+
+def teacher_required(view_func):
+    return user_passes_test(
+        lambda user: user.is_authenticated and user.is_staff,
+        login_url='login'
+    )(view_func)
+
+
+@teacher_required
+def teacher_dashboard(request):
+    students = User.objects.filter(
+        is_staff=False,
+        is_superuser=False
+    ).order_by('username')
+
+    total_students = students.count()
+    total_assignments = Assignment.objects.count()
+    completed_assignments = Assignment.objects.filter(status='Completed').count()
+    pending_assignments = Assignment.objects.filter(status='Pending').count()
+
+    return render(request, 'assignments/teacher_dashboard.html', {
+        'students': students,
+        'total_students': total_students,
+        'total_assignments': total_assignments,
+        'completed_assignments': completed_assignments,
+        'pending_assignments': pending_assignments,
+    })
+
+
+@teacher_required
+def teacher_students(request):
+    search = request.GET.get('search', '').strip()
+
+    students = User.objects.filter(
+        is_staff=False,
+        is_superuser=False
+    ).order_by('username')
+
+    if search:
+        students = students.filter(
+            username__icontains=search
+        ) | students.filter(
+            email__icontains=search
+        )
+
+    return render(request, 'assignments/teacher_students.html', {
+        'students': students,
+        'search': search,
+    })
+
+
+@teacher_required
+def teacher_student_detail(request, user_id):
+    student = get_object_or_404(
+        User,
+        id=user_id,
+        is_staff=False,
+        is_superuser=False
+    )
+
+    assignments = Assignment.objects.filter(
+        user=student
+    ).order_by('due_date')
+
+    return render(request, 'assignments/teacher_student_detail.html', {
+        'student': student,
+        'assignments': assignments,
+    })

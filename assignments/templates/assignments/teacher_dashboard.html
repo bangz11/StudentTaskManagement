@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teacher Dashboard</title>
+</head>
+<body>
+    <h1>Teacher Dashboard</h1>
+
+    <p>Total Students: {{ total_students }}</p>
+    <p>Total Assignments: {{ total_assignments }}</p>
+    <p>Completed Assignments: {{ completed_assignments }}</p>
+    <p>Pending Assignments: {{ pending_assignments }}</p>
+
+    <h2>Students</h2>
+
+    {% for student in students %}
+        <p>
+            <a href="{% url 'teacher_student_detail' student.id %}">
+                {{ student.username }}
+            </a>
+        </p>
+    {% empty %}
+        <p>No students found.</p>
+    {% endfor %}
+
+    <p>
+        <a href="{% url 'teacher_students' %}">View All Students</a>
+    </p>
+
+    <p>
+        <a href="{% url 'logout' %}">Logout</a>
+    </p>
+</body>
+</html>
