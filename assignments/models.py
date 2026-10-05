@@ -20,6 +20,18 @@ class Assignment(models.Model):
     title = models.CharField(max_length=200)
     subject = models.CharField(max_length=100)
     description = models.TextField(blank=True)
+
+    assignment_file = models.FileField(
+        upload_to='assignments/',
+        blank=True,
+        null=True
+    )
+
+    file_text = models.TextField(
+        blank=True,
+        null=True
+    )
+
     due_date = models.DateField()
 
     priority = models.CharField(

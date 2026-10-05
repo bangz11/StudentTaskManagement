@@ -6,142 +6,373 @@
 
 <section class="page-container teacher-page">
 
-    <div class="teacher-banner">
+    <div class="page-header">
         <div>
             <p class="eyebrow">TEACHER PORTAL</p>
             <h1>Teacher Dashboard</h1>
-            <p>
-                Monitor students and review assignment progress
-                from one place.
-            </p>
+            <p>Monitor students and review their academic progress.</p>
         </div>
 
         <a href="{% url 'teacher_students' %}" class="btn btn-primary">
-            View Students
+            View All Students
         </a>
     </div>
 
-    <div class="stats-grid">
+    <!-- Statistics -->
+
+    <section class="stats-grid">
 
         <div class="stat-card">
-            <div class="stat-icon">S</div>
-            <div>
-                <span>Total Students</span>
-                <strong>{{ total_students }}</strong>
-            </div>
+            <span class="stat-label">Total Students</span>
+            <strong>{{ total_students }}</strong>
+            <span class="stat-description">Registered students</span>
         </div>
 
         <div class="stat-card">
-            <div class="stat-icon">A</div>
-            <div>
-                <span>Total Assignments</span>
-                <strong>{{ total_assignments }}</strong>
-            </div>
+            <span class="stat-label">Total Assignments</span>
+            <strong>{{ total_assignments }}</strong>
+            <span class="stat-description">Student assignments</span>
         </div>
 
         <div class="stat-card">
-            <div class="stat-icon">C</div>
-            <div>
-                <span>Completed</span>
-                <strong>{{ completed_assignments }}</strong>
-            </div>
+            <span class="stat-label">Completed</span>
+            <strong>{{ completed_assignments }}</strong>
+            <span class="stat-description">Finished assignments</span>
         </div>
 
         <div class="stat-card">
-            <div class="stat-icon">P</div>
-            <div>
-                <span>Pending</span>
-                <strong>{{ pending_assignments }}</strong>
-            </div>
+            <span class="stat-label">Pending</span>
+            <strong>{{ pending_assignments }}</strong>
+            <span class="stat-description">Assignments to complete</span>
         </div>
 
-    </div>
+    </section>
 
-    <div class="content-grid">
+    <!-- Student Progress -->
 
-        <section class="panel">
+    <section class="panel">
 
-            <div class="panel-header">
-                <div>
-                    <p class="eyebrow">STUDENT MANAGEMENT</p>
-                    <h2>Students</h2>
-                </div>
-
-                <a href="{% url 'teacher_students' %}" class="text-link">
-                    View all
-                </a>
+        <div class="panel-header">
+            <div>
+                <p class="eyebrow">ACADEMIC MONITORING</p>
+                <h2>Student Assignment Progress</h2>
+                <p>Review individual student work and assignment records.</p>
             </div>
 
-            <div class="student-list">
+            <a href="{% url 'teacher_students' %}" class="btn btn-secondary">
+                Student Directory
+            </a>
+        </div>
 
-                {% for student in students %}
+        <div class="student-grid">
 
-                    <div class="student-row">
+            {% for student in students %}
+
+                <article class="dashboard-student-card">
+
+                    <div class="dashboard-student-top">
 
                         <div class="student-avatar">
                             {{ student.username|first|upper }}
                         </div>
 
-                        <div class="student-info">
-                            <strong>{{ student.username }}</strong>
+                        <div>
+                            <h3>{{ student.username }}</h3>
 
                             {% if student.email %}
-                                <span>{{ student.email }}</span>
+                                <p>{{ student.email }}</p>
                             {% else %}
-                                <span>No email provided</span>
+                                <p class="muted">No email address</p>
                             {% endif %}
                         </div>
 
+                    </div>
+
+                    <div class="student-progress">
+
+                        <div>
+                            <span>Total</span>
+                            <strong>{{ student.assignment_count }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Completed</span>
+                            <strong>{{ student.completed_count }}</strong>
+                        </div>
+
+                        <div>
+                            <span>Pending</span>
+                            <strong>{{ student.pending_count }}</strong>
+                        </div>
+
+                    </div>
+
+                    <div class="student-card-footer">
+
+                        <span class="student-role">
+                            Student Account
+                        </span>
+
                         <a
                             href="{% url 'teacher_student_detail' student.id %}"
-                            class="btn btn-secondary"
+                            class="btn btn-primary"
                         >
-                            View
+                            View Progress
                         </a>
 
                     </div>
 
-                {% empty %}
+                </article>
 
-                    <div class="empty-state">
-                        <h3>No students found</h3>
+            {% empty %}
+
+                <div class="empty-state">
+                    <div class="empty-state-content">
+
+                        <p class="eyebrow">NO STUDENTS</p>
+
+                        <h2>No Student Accounts Yet</h2>
+
                         <p>
-                            Student accounts will appear here after
-                            they register.
+                            Student accounts will appear here after registration.
                         </p>
+
+                        <a href="{% url 'teacher_students' %}" class="btn btn-secondary">
+                            Student Directory
+                        </a>
+
                     </div>
+                </div>
 
-                {% endfor %}
+            {% endfor %}
 
+        </div>
+
+    </section>
+
+    <!-- Quick Actions -->
+
+    <section class="panel">
+
+        <div class="panel-header">
+            <div>
+                <p class="eyebrow">QUICK ACTIONS</p>
+                <h2>Teacher Tools</h2>
             </div>
+        </div>
 
-        </section>
+        <div class="quick-actions">
 
-        <aside class="panel quick-panel">
-
-            <p class="eyebrow">TEACHER TOOLS</p>
-
-            <h2>Quick Actions</h2>
-
-            <a href="{% url 'teacher_students' %}" class="quick-action">
-                <strong>Manage Students</strong>
-                <span>Search students and view their assignments.</span>
+            <a href="{% url 'teacher_students' %}" class="quick-action-card">
+                <strong>Student Directory</strong>
+                <span>Search and review student accounts.</span>
             </a>
 
-            <a href="{% url 'home' %}" class="quick-action">
-                <strong>View Website</strong>
-                <span>Open the main StudyFlow website.</span>
+            <a href="{% url 'teacher_dashboard' %}" class="quick-action-card">
+                <strong>Dashboard Overview</strong>
+                <span>View overall assignment statistics.</span>
             </a>
 
-            <a href="{% url 'logout' %}" class="quick-action">
-                <strong>Sign Out</strong>
-                <span>Securely leave the teacher portal.</span>
-            </a>
+        </div>
 
-        </aside>
-
-    </div>
+    </section>
 
 </section>
+
+<style>
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    padding: 24px;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+}
+
+.stat-card strong {
+    display: block;
+    margin: 8px 0 4px;
+    font-size: 34px;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 13px;
+    font-weight: 800;
+    color: #2563eb;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.stat-description {
+    color: #64748b;
+    font-size: 14px;
+}
+
+.student-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+.dashboard-student-card {
+    padding: 22px;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    background: #ffffff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-student-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+}
+
+.dashboard-student-top {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.dashboard-student-top h3 {
+    margin: 0 0 5px;
+    font-size: 19px;
+}
+
+.dashboard-student-top p {
+    margin: 0;
+    color: #64748b;
+}
+
+.student-avatar {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    border-radius: 50%;
+    background: #2563eb;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+.student-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.student-role {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    color: #2563eb;
+    background: #eff6ff;
+    padding: 5px 10px;
+    border-radius: 999px;
+}
+
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.quick-action-card {
+    display: block;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    text-decoration: none;
+    background: #ffffff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.quick-action-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+}
+
+.quick-action-card strong {
+    display: block;
+    color: #0f172a;
+    margin-bottom: 6px;
+}
+
+.quick-action-card span {
+    color: #64748b;
+    font-size: 14px;
+}
+
+@media (max-width: 900px) {
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .student-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+
+    .student-card-footer {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+}
+
+
+.student-progress {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.student-progress div {
+    padding: 12px;
+    border-radius: 12px;
+    background: #f8fafc;
+    text-align: center;
+}
+
+.student-progress span {
+    display: block;
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.student-progress strong {
+    font-size: 20px;
+}
+
+</style>
 
 {% endblock %}

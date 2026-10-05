@@ -1,66 +1,210 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>{% block title %}StudyFlow{% endblock %}</title>
-
     <link rel="stylesheet" href="{% static 'assignments/css/style.css' %}">
 </head>
 
 <body>
 
-    <header class="navbar">
-        <div class="container navbar-content">
+{% if user.is_authenticated %}
 
-            <a href="{% url 'home' %}" class="logo">
-                StudyFlow
+<div class="app-layout {% if user.is_staff %}teacher-app{% else %}student-app{% endif %}">
+
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+            <a href="{% if user.is_staff %}{% url 'teacher_dashboard' %}{% else %}{% url 'dashboard' %}{% endif %}">
+                <span class="brand-mark">S</span>
+                <span>StudyFlow</span>
+            </a>
+        </div>
+
+        <div class="sidebar-image"></div>
+
+        <div class="sidebar-role">
+            {% if user.is_staff %}TEACHER PORTAL{% else %}STUDENT PORTAL{% endif %}
+        </div>
+
+        <nav class="sidebar-nav">
+
+            {% if user.is_staff %}
+
+            <a href="{% url 'teacher_dashboard' %}" class="sidebar-link">
+                <span class="nav-icon">D</span>
+                <span>Dashboard</span>
             </a>
 
-            <nav>
-                <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'teacher_students' %}" class="sidebar-link">
+                <span class="nav-icon">S</span>
+                <span>Students</span>
+            </a>
 
-                {% if user.is_authenticated %}
+            {% else %}
 
+            <a href="{% url 'dashboard' %}" class="sidebar-link">
+                <span class="nav-icon">D</span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="{% url 'assignment_list' %}" class="sidebar-link">
+                <span class="nav-icon">A</span>
+                <span>My Assignments</span>
+            </a>
+
+            </a>
+
+            <a href="{% url 'explore' %}" class="sidebar-link">
+                <span class="nav-icon">E</span>
+                <span>Explore</span>
+            </a>
+
+            {% endif %}
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <div class="sidebar-user">
+                <div class="user-avatar">
+                    {{ user.username|first|upper }}
+                </div>
+
+                <div class="user-details">
+                    <strong>{{ user.username }}</strong>
                     {% if user.is_staff %}
-                        <a href="{% url 'teacher_dashboard' %}">Teacher Portal</a>
-                        <a href="{% url 'teacher_students' %}">Students</a>
+                    <span>Teacher</span>
                     {% else %}
-                        <a href="{% url 'dashboard' %}">Dashboard</a>
-                        <a href="{% url 'assignment_list' %}">Assignments</a>
-                        <a href="{% url 'explore' %}">Explore</a>
+                    <span>Student</span>
                     {% endif %}
+                </div>
+            </div>
 
-                    <a href="{% url 'logout' %}">Logout</a>
+            <a href="{% url 'logout' %}" class="logout-link">Logout</a>
+
+        </div>
+
+    </aside>
+
+    <div class="app-main">
+
+        <header class="app-header">
+
+            <div>
+                {% if user.is_staff %}
+                <span class="header-label">Teacher Workspace</span>
+                {% else %}
+                <span class="header-label">Student Workspace</span>
+                {% endif %}
+
+                <h2>Academic Management</h2>
+            </div>
+
+            <div class="header-user">
+
+                <div class="header-avatar">
+                    {{ user.username|first|upper }}
+                </div>
+
+                <div>
+                    <strong>{{ user.username }}</strong>
+                    {% if user.is_staff %}
+                    <span>Teacher</span>
+                    {% else %}
+                    <span>Student</span>
+                    {% endif %}
+                </div>
+
+            </div>
+
+        </header>
+
+        <div class="workspace-image {% if user.is_staff %}teacher-image{% else %}student-image{% endif %}">
+
+            <div class="workspace-image-overlay">
+
+                {% if user.is_staff %}
+
+                <span>TEACHER WORKSPACE</span>
+                <h1>Manage and Review Student Progress</h1>
+                <p>Monitor students and review their academic assignments.</p>
 
                 {% else %}
 
-                    <a href="{% url 'explore' %}">Explore</a>
-                    <a href="{% url 'login' %}">Login</a>
-                    <a href="{% url 'register' %}">Register</a>
+                <span>STUDENT WORKSPACE</span>
+                <h1>Stay Organized. Stay on Track.</h1>
+                <p>Manage your assignments and keep your academic work under control.</p>
 
                 {% endif %}
-            </nav>
+
+            </div>
 
         </div>
-    </header>
 
-    <main>
-        {% block content %}
-        {% endblock %}
-    </main>
+{% else %}
 
-    <footer>
-        <div class="container">
-            <p>StudyFlow - Student Task Management System</p>
-            <p>Built with Django</p>
+<header class="public-navbar">
+
+    <div class="public-nav-container">
+
+        <a href="{% url 'home' %}" class="public-logo">
+            <span class="brand-mark">S</span>
+            <span>StudyFlow</span>
+        </a>
+
+        <nav>
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'explore' %}">Explore</a>
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register' %}" class="nav-register">Get Started</a>
+        </nav>
+
+    </div>
+
+</header>
+
+{% endif %}
+
+<main>
+    {% block content %}{% endblock %}
+</main>
+
+{% if user.is_authenticated %}
+
+        <footer class="app-footer">
+            <div>
+                <strong>StudyFlow</strong>
+                <span>Student Task Management System</span>
+            </div>
+            <span>Built with Django</span>
+        </footer>
+
+    </div>
+</div>
+
+{% else %}
+
+<footer class="public-footer">
+
+    <div class="container">
+
+        <div>
+            <strong>StudyFlow</strong>
+            <p>Student Task Management System</p>
         </div>
-    </footer>
 
-    <script src="{% static 'assignments/js/script.js' %}"></script>
+        <p>Built with Django</p>
+
+    </div>
+
+</footer>
+
+{% endif %}
+
+<script src="{% static 'assignments/js/script.js' %}"></script>
 
 </body>
 </html>

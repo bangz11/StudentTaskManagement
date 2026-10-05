@@ -1,0 +1,205 @@
+{% extends 'assignments/base.html' %}
+
+{% block title %}Assign Work | StudyFlow{% endblock %}
+
+{% block content %}
+
+<section class="page-container teacher-page">
+
+    <div class="page-header">
+        <div>
+            <p class="eyebrow">TEACHER PORTAL / ASSIGNMENT</p>
+            <h1>Assign Work</h1>
+            <p>Create an assignment for {{ student.username }} and set the deadline.</p>
+        </div>
+
+        <a href="{% url 'teacher_student_detail' student.id %}" class="btn btn-secondary">
+            Back to Student
+        </a>
+    </div>
+
+    <section class="panel form-panel">
+
+        <form method="post" enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            <div class="section-block">
+                <p class="eyebrow">STUDENT</p>
+                <h2>{{ student.username }}</h2>
+                <p>{{ student.email }}</p>
+            </div>
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label>Assignment Title</label>
+                    <input
+                        type="text"
+                        name="title"
+                        placeholder="e.g. Database Project"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Subject</label>
+                    <input
+                        type="text"
+                        name="subject"
+                        placeholder="e.g. Database Systems"
+                        required
+                    >
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Description / Instructions</label>
+                    <textarea
+                        name="description"
+                        rows="5"
+                        placeholder="Write instructions for the student..."
+                    ></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Deadline</label>
+                    <input
+                        type="date"
+                        name="due_date"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Priority</label>
+                    <select name="priority">
+                        <option value="High">High</option>
+                        <option value="Medium" selected>Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Status</label>
+                    <select name="status">
+                        <option value="Pending" selected>Pending</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Assignment File</label>
+                    <input
+                        type="file"
+                        name="assignment_file"
+                        accept=".pdf,.docx,.jpg,.jpeg,.png"
+                    >
+                    <small>Maximum 10 MB</small>
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+
+                <a
+                    href="{% url 'teacher_student_detail' student.id %}"
+                    class="btn btn-secondary"
+                >
+                    Cancel
+                </a>
+
+                <button type="submit" class="btn btn-primary">
+                    Assign to Student
+                </button>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</section>
+
+<style>
+
+.form-panel {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.section-block {
+    padding-bottom: 24px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.section-block h2 {
+    margin: 5px 0;
+}
+
+.section-block p:not(.eyebrow) {
+    color: #64748b;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group.full-width {
+    grid-column: span 2;
+}
+
+.form-group label {
+    font-weight: 700;
+    color: #334155;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    border: 1px solid #dbe1e8;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 15px;
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+.form-group small {
+    color: #94a3b8;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+@media (max-width: 700px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group.full-width {
+        grid-column: span 1;
+    }
+}
+
+</style>
+
+{% endblock %}

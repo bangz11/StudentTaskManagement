@@ -1,138 +1,276 @@
-﻿{% extends "assignments/base.html" %}
+{% extends 'assignments/base.html' %}
+
+{% block title %}Student Dashboard | StudyFlow{% endblock %}
 
 {% block content %}
-<div class="page-container">
+
+<section class="page-container">
 
     <div class="page-header">
         <div>
-            <p class="eyebrow">Student Dashboard</p>
+            <p class="eyebrow">STUDENT WORKSPACE</p>
             <h1>Welcome back, {{ request.user.username }}</h1>
-            <p>Keep track of your assignments and stay organized.</p>
+            <p>Manage your assignments and keep track of your academic progress.</p>
         </div>
 
-        <a href="{% url 'add_assignment' %}" class="btn btn-primary">Add Assignment</a>
+        <a href="{% url 'add_assignment' %}" class="btn btn-primary">
+            Add Assignment
+        </a>
     </div>
 
-    <div class="stats-grid">
+    <!-- Statistics -->
+
+    <section class="stats-grid">
 
         <div class="stat-card">
-            <div class="stat-icon">A</div>
-            <div>
-                <span>Total Assignments</span>
-                <strong>{{ total_assignments }}</strong>
-            </div>
+            <span class="stat-label">Total</span>
+            <strong>{{ total_assignments }}</strong>
+            <span class="stat-description">All assignments</span>
         </div>
 
         <div class="stat-card">
-            <div class="stat-icon">P</div>
-            <div>
-                <span>Pending</span>
-                <strong>{{ pending_count }}</strong>
-            </div>
+            <span class="stat-label">Pending</span>
+            <strong>{{ pending_assignments }}</strong>
+            <span class="stat-description">Waiting to be completed</span>
         </div>
 
         <div class="stat-card">
-            <div class="stat-icon">I</div>
-            <div>
-                <span>In Progress</span>
-                <strong>{{ in_progress_count }}</strong>
-            </div>
+            <span class="stat-label">In Progress</span>
+            <strong>{{ in_progress_assignments }}</strong>
+            <span class="stat-description">Currently working on</span>
         </div>
 
         <div class="stat-card">
-            <div class="stat-icon">C</div>
-            <div>
-                <span>Completed</span>
-                <strong>{{ completed_count }}</strong>
-            </div>
+            <span class="stat-label">Completed</span>
+            <strong>{{ completed_assignments }}</strong>
+            <span class="stat-description">Finished assignments</span>
         </div>
 
-    </div>
+    </section>
 
-    <div class="content-grid">
+    <!-- Upcoming Assignments -->
 
-        <section class="panel">
-            <div class="panel-header">
-                <div>
-                    <p class="eyebrow">Your Work</p>
-                    <h2>Upcoming Assignments</h2>
-                </div>
+    <section class="panel">
 
-                <a href="{% url 'assignment_list' %}" class="text-link">View all</a>
+        <div class="panel-header">
+            <div>
+                <p class="eyebrow">YOUR WORK</p>
+                <h2>Upcoming Assignments</h2>
+                <p>Stay on top of your upcoming deadlines.</p>
             </div>
 
-            {% if upcoming_assignments %}
-                <div class="assignment-list">
-                    {% for assignment in upcoming_assignments %}
+            <a href="{% url 'assignment_list' %}" class="btn btn-secondary">
+                My Assignments
+            </a>
+        </div>
 
-                        <div class="assignment-card">
+        <div class="assignment-list">
 
-                            <div class="assignment-main">
-                                <h3>{{ assignment.title }}</h3>
-                                <p>{{ assignment.subject }}</p>
+            {% for assignment in upcoming_assignments %}
 
-                                {% if assignment.description %}
-                                    <small>{{ assignment.description|truncatewords:15 }}</small>
-                                {% endif %}
+                <article class="assignment-card">
+
+                    <div class="assignment-main">
+
+                        <div class="assignment-title-row">
+
+                            <div>
+                                <p class="eyebrow">{{ assignment.subject }}</p>
+                                <h2>{{ assignment.title }}</h2>
                             </div>
 
-                            <div class="assignment-meta">
-                                <span class="status-badge">{{ assignment.status }}</span>
-                                <span>Due {{ assignment.due_date|date:"M d, Y" }}</span>
+                            <span class="status-badge">
+                                {{ assignment.status }}
+                            </span>
+
+                        </div>
+
+                        {% if assignment.description %}
+                            <p class="assignment-description">
+                                {{ assignment.description }}
+                            </p>
+                        {% endif %}
+
+                        <div class="assignment-details">
+
+                            <div>
+                                <span class="detail-label">Due Date</span>
+                                <strong>
+                                    {{ assignment.due_date|date:"M d, Y" }}
+                                </strong>
                             </div>
 
-                            <div class="assignment-actions">
-                                <a href="{% url 'edit_assignment' assignment.id %}" class="btn btn-secondary">Edit</a>
+                            <div>
+                                <span class="detail-label">Priority</span>
+                                <strong>
+                                    {{ assignment.priority }}
+                                </strong>
+                            </div>
 
-                                <a href="{% url 'delete_assignment' assignment.id %}"
-                                   class="btn btn-danger"
-                                   onclick="return confirm('Are you sure you want to delete this assignment?');">
-                                    Delete
-                                </a>
+                            <div>
+                                <span class="detail-label">Status</span>
+                                <strong>
+                                    {{ assignment.status }}
+                                </strong>
                             </div>
 
                         </div>
 
-                    {% endfor %}
-                </div>
+                    </div>
 
-            {% else %}
+                </article>
+
+            {% empty %}
 
                 <div class="empty-state">
-                    <h3>No upcoming assignments</h3>
-                    <p>You are all caught up. Add a new assignment when you have work to track.</p>
 
-                    <a href="{% url 'add_assignment' %}" class="btn btn-primary">
-                        Add Your First Assignment
-                    </a>
+                    <div class="empty-state-content">
+
+                        <p class="eyebrow">ALL CLEAR</p>
+
+                        <h2>No Upcoming Assignments</h2>
+
+                        <p>
+                            You don't have any upcoming assignments right now.
+                        </p>
+
+                        <a href="{% url 'add_assignment' %}" class="btn btn-primary">
+                            Add Assignment
+                        </a>
+
+                    </div>
+
                 </div>
 
-            {% endif %}
-        </section>
+            {% endfor %}
 
-        <aside class="panel quick-panel">
+        </div>
 
-            <p class="eyebrow">Quick Actions</p>
-            <h2>Manage Your Work</h2>
+    </section>
 
-            <a href="{% url 'add_assignment' %}" class="quick-action">
-                <strong>Create Assignment</strong>
-                <span>Add a new task to your list.</span>
-            </a>
+    <!-- Quick Actions -->
 
-            <a href="{% url 'assignment_list' %}" class="quick-action">
+    <section class="panel">
+
+        <div class="panel-header">
+            <div>
+                <p class="eyebrow">QUICK ACTIONS</p>
+                <h2>Student Tools</h2>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+
+            <a href="{% url 'assignment_list' %}" class="quick-action-card">
                 <strong>My Assignments</strong>
-                <span>Search and manage all your tasks.</span>
+                <span>View, search, edit, and manage your assignments.</span>
             </a>
 
-            <a href="{% url 'explore' %}" class="quick-action">
-                <strong>Explore StudyFlow</strong>
-                <span>Find useful ways to organize your study.</span>
+            <a href="{% url 'add_assignment' %}" class="quick-action-card">
+                <strong>Add Assignment</strong>
+                <span>Create a new assignment and set its deadline.</span>
             </a>
 
-        </aside>
+            <a href="{% url 'explore' %}" class="quick-action-card">
+                <strong>Explore</strong>
+                <span>Explore the StudyFlow workspace.</span>
+            </a>
 
-    </div>
+        </div>
 
-</div>
+    </section>
+
+</section>
+
+<style>
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    padding: 24px;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+}
+
+.stat-card strong {
+    display: block;
+    margin: 8px 0 4px;
+    font-size: 34px;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 13px;
+    font-weight: 800;
+    color: #2563eb;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.stat-description {
+    color: #64748b;
+    font-size: 14px;
+}
+
+.quick-actions {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.quick-action-card {
+    display: block;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    text-decoration: none;
+    background: #ffffff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.quick-action-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+}
+
+.quick-action-card strong {
+    display: block;
+    color: #0f172a;
+    margin-bottom: 6px;
+}
+
+.quick-action-card span {
+    color: #64748b;
+    font-size: 14px;
+}
+
+@media (max-width: 900px) {
+
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .quick-actions {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+</style>
+
 {% endblock %}

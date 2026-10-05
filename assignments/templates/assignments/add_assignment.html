@@ -1,4 +1,4 @@
-﻿{% extends 'assignments/base.html' %}
+{% extends 'assignments/base.html' %}
 
 {% block title %}Add Assignment | StudyFlow{% endblock %}
 
@@ -6,60 +6,81 @@
 
 <section class="page-container">
 
-    <div class="form-page">
-
-        <div class="form-intro">
-            <p class="eyebrow">NEW ASSIGNMENT</p>
-            <h1>Create an Assignment</h1>
-            <p>
-                Add your academic work below and keep everything organized
-                in one place.
-            </p>
+    <div class="page-header">
+        <div>
+            <p class="eyebrow">STUDENT WORKSPACE</p>
+            <h1>Add Assignment</h1>
+            <p>Upload an assignment or enter the details manually.</p>
         </div>
 
-        <div class="form-card">
+        <a href="{% url 'assignment_list' %}" class="btn btn-secondary">
+            My Assignments
+        </a>
+    </div>
 
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="message">
-                        {{ message }}
+    <section class="panel form-panel">
+
+        <!-- FILE UPLOAD -->
+        <div class="section-block">
+            <div class="section-heading">
+                <span class="section-icon">📎</span>
+                <div>
+                    <p class="eyebrow">OPTIONAL</p>
+                    <h2>Assignment File</h2>
+                    <p>Upload your assignment file. PDF and DOCX files can be read automatically.</p>
+                </div>
+            </div>
+
+           <div class="file-upload-box">
+    <label for="assignment_file" class="file-label">
+        <strong>Choose Assignment File</strong>
+        <span>PDF, DOCX, JPG, JPEG, or PNG</span>
+        <small>Maximum file size: 10 MB</small>
+    </label>
+
+    <input
+        id="assignment_file"
+        type="file"
+        name="assignment_file"
+        accept=".pdf,.docx,.jpg,.jpeg,.png"
+    >
+</div>
+        </div>
+
+        <form method="post" enctype="multipart/form-data" class="assignment-form">
+
+            {% csrf_token %}
+
+            <div class="section-block">
+
+                <div class="section-heading">
+                    <span class="section-icon">📝</span>
+                    <div>
+                        <p class="eyebrow">ASSIGNMENT DETAILS</p>
+                        <h2>Basic Information</h2>
+                        <p>Add the main information about your assignment.</p>
                     </div>
-                {% endfor %}
-            {% endif %}
-
-            <form method="POST">
-                {% csrf_token %}
+                </div>
 
                 <div class="form-grid">
 
-                    <div class="form-group full-width">
+                    <div class="form-group">
                         <label for="title">Assignment Title</label>
                         <input
-                            type="text"
                             id="title"
+                            type="text"
                             name="title"
-                            placeholder="Example: Database Management Report"
-                            required
+                            placeholder="e.g. Database Project"
                         >
                     </div>
 
                     <div class="form-group">
                         <label for="subject">Subject</label>
                         <input
-                            type="text"
                             id="subject"
+                            type="text"
                             name="subject"
-                            placeholder="Example: Information Technology"
-                            required
-                        >
-                    </div>
-
-                    <div class="form-group">
-                        <label for="due_date">Due Date</label>
-                        <input
-                            type="date"
-                            id="due_date"
-                            name="due_date"
+                            placeholder="e.g. Database Systems"
                             required
                         >
                     </div>
@@ -69,17 +90,45 @@
                         <textarea
                             id="description"
                             name="description"
-                            placeholder="Describe the assignment, requirements, or important notes..."
-                            rows="6"
+                            rows="5"
+                            placeholder="Add assignment details or notes..."
                         ></textarea>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="section-block">
+
+                <div class="section-heading">
+                    <span class="section-icon">📅</span>
+                    <div>
+                        <p class="eyebrow">PLANNING</p>
+                        <h2>Deadline & Status</h2>
+                        <p>Set when the assignment is due and track its progress.</p>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+
+                    <div class="form-group">
+                        <label for="due_date">Due Date</label>
+                        <input
+                            id="due_date"
+                            type="date"
+                            name="due_date"
+                            required
+                        >
                     </div>
 
                     <div class="form-group">
                         <label for="priority">Priority</label>
                         <select id="priority" name="priority" required>
-                            <option value="Low">Low</option>
-                            <option value="Medium" selected>Medium</option>
+                            <option value="">Select priority</option>
                             <option value="High">High</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="Low">Low</option>
                         </select>
                     </div>
 
@@ -94,30 +143,192 @@
 
                 </div>
 
-                <div class="form-actions">
+            </div>
 
-                    <a
-                        href="{% url 'dashboard' %}"
-                        class="btn btn-secondary"
-                    >
-                        Cancel
-                    </a>
+            <div class="form-actions">
 
-                    <button
-                        type="submit"
-                        class="btn btn-primary"
-                    >
-                        Create Assignment
-                    </button>
+                <a href="{% url 'assignment_list' %}" class="btn btn-secondary">
+                    Cancel
+                </a>
 
-                </div>
+                <button type="submit" class="btn btn-primary">
+                    Save Assignment
+                </button>
 
-            </form>
+            </div>
 
-        </div>
+        </form>
 
-    </div>
+    </section>
 
 </section>
+
+<style>
+
+.form-panel {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.section-block {
+    padding: 24px 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.section-block:first-child {
+    padding-top: 0;
+}
+
+.section-heading {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.section-icon {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eff6ff;
+    border-radius: 10px;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.section-heading h2 {
+    margin: 2px 0 5px;
+    color: #0f172a;
+}
+
+.section-heading p:not(.eyebrow) {
+    margin: 0;
+    color: #64748b;
+    font-size: 14px;
+}
+
+.file-upload-box {
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
+    padding: 24px;
+    background: #f8fafc;
+    transition: 0.2s ease;
+}
+
+.file-upload-box:hover {
+    border-color: #2563eb;
+    background: #f8fbff;
+}
+
+.file-label {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    cursor: pointer;
+    color: #334155;
+}
+
+.file-label strong {
+    font-size: 15px;
+}
+
+.file-label span {
+    font-size: 14px;
+    color: #64748b;
+}
+
+.file-label small {
+    font-size: 12px;
+    color: #94a3b8;
+}
+
+.file-upload-box input {
+    display: block;
+    margin-top: 12px;
+}
+
+.assignment-form {
+    margin-top: 0;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group.full-width {
+    grid-column: span 2;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #334155;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 14px;
+    border: 1px solid #dbe1e8;
+    border-radius: 10px;
+    background: #ffffff;
+    color: #0f172a;
+    font-size: 15px;
+    font-family: inherit;
+    outline: none;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 28px;
+    padding-top: 20px;
+}
+
+@media (max-width: 700px) {
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group.full-width {
+        grid-column: span 1;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .form-actions .btn {
+        width: 100%;
+    }
+
+}
+
+</style>
 
 {% endblock %}

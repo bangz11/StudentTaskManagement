@@ -10,9 +10,7 @@
         <div>
             <p class="eyebrow">TEACHER PORTAL</p>
             <h1>Students</h1>
-            <p>
-                Search student accounts and review their assignment progress.
-            </p>
+            <p>Search student accounts and review their assignment progress.</p>
         </div>
 
         <a href="{% url 'teacher_dashboard' %}" class="btn btn-secondary">
@@ -40,12 +38,6 @@
             <button type="submit" class="btn btn-primary">
                 Search
             </button>
-
-            {% if search %}
-                <a href="{% url 'teacher_students' %}" class="btn btn-secondary">
-                    Clear
-                </a>
-            {% endif %}
         </form>
 
     </section>
@@ -63,61 +55,58 @@
             </span>
         </div>
 
-        <div class="student-list">
+        <div class="student-directory">
 
             {% for student in students %}
 
-                <div class="student-row">
+                <article class="student-card">
 
                     <div class="student-avatar">
                         {{ student.username|first|upper }}
                     </div>
 
                     <div class="student-info">
-                        <strong>{{ student.username }}</strong>
+
+                        <h3>{{ student.username }}</h3>
 
                         {% if student.email %}
-                            <span>{{ student.email }}</span>
+                            <p>{{ student.email }}</p>
                         {% else %}
-                            <span>No email provided</span>
+                            <p class="muted">No email address provided.</p>
                         {% endif %}
+
+                        <span class="student-role">
+                            Student Account
+                        </span>
+
                     </div>
 
-                    <a
-                        href="{% url 'teacher_student_detail' student.id %}"
-                        class="btn btn-primary"
-                    >
-                        View Assignments
-                    </a>
+                    <div class="student-action">
 
-                </div>
+                        <a
+                            href="{% url 'teacher_student_detail' student.id %}"
+                            class="btn btn-primary"
+                        >
+                            View Assignments
+                        </a>
+
+                    </div>
+
+                </article>
 
             {% empty %}
 
                 <div class="empty-state">
                     <div class="empty-state-content">
-                        <p class="eyebrow">NO RESULTS</p>
 
-                        <h2>No Students Found</h2>
+                        <p class="eyebrow">NO STUDENTS FOUND</p>
 
-                        {% if search %}
-                            <p>
-                                No student account matched "{{ search }}".
-                                Try another username or email address.
-                            </p>
+                        <h2>No Student Accounts</h2>
 
-                            <a
-                                href="{% url 'teacher_students' %}"
-                                class="btn btn-secondary"
-                            >
-                                Clear Search
-                            </a>
-                        {% else %}
-                            <p>
-                                Student accounts will appear here after
-                                students register.
-                            </p>
-                        {% endif %}
+                        <p>
+                            No student accounts match your search.
+                        </p>
+
                     </div>
                 </div>
 
@@ -128,5 +117,90 @@
     </section>
 
 </section>
+
+<style>
+
+.student-directory {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.student-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 22px;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    background: #ffffff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.student-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+}
+
+.student-avatar {
+    width: 54px;
+    height: 54px;
+    min-width: 54px;
+    border-radius: 50%;
+    background: #2563eb;
+    color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 21px;
+    font-weight: 800;
+}
+
+.student-info {
+    flex: 1;
+}
+
+.student-info h3 {
+    margin: 0 0 5px;
+    font-size: 20px;
+}
+
+.student-info p {
+    margin: 0 0 8px;
+    color: #64748b;
+}
+
+.student-role {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    color: #2563eb;
+    background: #eff6ff;
+    padding: 5px 10px;
+    border-radius: 999px;
+}
+
+.student-action {
+    flex-shrink: 0;
+}
+
+@media (max-width: 700px) {
+
+    .student-card {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .student-action {
+        width: 100%;
+    }
+
+    .student-action .btn {
+        width: 100%;
+    }
+
+}
+
+</style>
 
 {% endblock %}

@@ -8,7 +8,7 @@
 
     <div class="page-header">
         <div>
-            <p class="eyebrow">TEACHER PORTAL</p>
+            <p class="eyebrow">TEACHER PORTAL / STUDENT PROFILE</p>
             <h1>{{ student.username }}</h1>
 
             {% if student.email %}
@@ -19,7 +19,7 @@
         </div>
 
         <a href="{% url 'teacher_students' %}" class="btn btn-secondary">
-            Back to Students
+            ? Back to Students
         </a>
     </div>
 
@@ -27,8 +27,38 @@
 
         <div class="panel-header">
             <div>
+                <p class="eyebrow">STUDENT OVERVIEW</p>
+                <h2>Academic Progress</h2>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+
+            <div class="stat-card">
+                <span class="stat-label">Total Assignments</span>
+                <strong>{{ assignments|length }}</strong>
+            </div>
+
+            <div class="stat-card">
+                <span class="stat-label">Student</span>
+                <strong>{{ student.username }}</strong>
+            </div>
+
+            <div class="stat-card">
+                <span class="stat-label">Account Status</span>
+                <strong>Active</strong>
+            </div>
+
+        </div>
+
+    </section>
+
+    <section class="panel">
+
+        <div class="panel-header">
+            <div>
                 <p class="eyebrow">ACADEMIC WORK</p>
-                <h2>Assignments</h2>
+                <h2>Student Assignments</h2>
             </div>
 
             <span class="status-badge">
@@ -45,44 +75,64 @@
                     <div class="assignment-main">
 
                         <div class="assignment-title-row">
+
                             <div>
-                                <p class="eyebrow">{{ assignment.subject }}</p>
-                                <h2>{{ assignment.title }}</h2>
+                                <p class="eyebrow">
+                                    {{ assignment.subject }}
+                                </p>
+
+                                <h2>
+                                    {{ assignment.title }}
+                                </h2>
                             </div>
 
                             <span class="status-badge">
                                 {{ assignment.status }}
                             </span>
+
                         </div>
 
                         {% if assignment.description %}
+
                             <p class="assignment-description">
                                 {{ assignment.description }}
                             </p>
+
                         {% else %}
+
                             <p class="assignment-description muted">
                                 No description provided.
                             </p>
+
                         {% endif %}
 
                         <div class="assignment-details">
 
                             <div>
-                                <span class="detail-label">Due Date</span>
+                                <span class="detail-label">
+                                    Due Date
+                                </span>
+
                                 <strong>
                                     {{ assignment.due_date|date:"M d, Y" }}
                                 </strong>
                             </div>
 
                             <div>
-                                <span class="detail-label">Priority</span>
+                                <span class="detail-label">
+                                    Priority
+                                </span>
+
                                 <strong>
                                     {{ assignment.priority }}
                                 </strong>
                             </div>
 
                             <div>
-                                <span class="detail-label">Status</span>
+                                <span class="detail-label">
+                                    Status
+                                </span>
+
                                 <strong>
                                     {{ assignment.status }}
                                 </strong>
@@ -100,7 +150,9 @@
 
                     <div class="empty-state-content">
 
-                        <p class="eyebrow">NO ASSIGNMENTS</p>
+                        <p class="eyebrow">
+                            NO ASSIGNMENTS
+                        </p>
 
                         <h2>No Assignments Yet</h2>
 
@@ -113,7 +165,7 @@
                             href="{% url 'teacher_students' %}"
                             class="btn btn-secondary"
                         >
-                            Back to Students
+                            ? Back to Students
                         </a>
 
                     </div>
@@ -129,3 +181,4 @@
 </section>
 
 {% endblock %}
+

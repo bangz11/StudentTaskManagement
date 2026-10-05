@@ -1,4 +1,4 @@
-﻿{% extends 'assignments/base.html' %}
+{% extends 'assignments/base.html' %}
 
 {% block title %}My Assignments | StudyFlow{% endblock %}
 
@@ -8,25 +8,79 @@
 
     <div class="page-header">
         <div>
-            <p class="eyebrow">ASSIGNMENT MANAGEMENT</p>
+            <p class="eyebrow">STUDENT WORKSPACE</p>
             <h1>My Assignments</h1>
-            <p>View, update, and manage all your academic assignments.</p>
+            <p>View assignments assigned to you by your teacher.</p>
         </div>
-
-        <a href="{% url 'add_assignment' %}" class="btn btn-primary">
-            Add Assignment
-        </a>
     </div>
 
-    {% if messages %}
-        {% for message in messages %}
-            <div class="message">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endif %}
+    <section class="panel">
 
-    {% if assignments %}
+        <form method="get" class="assignment-filters">
+
+            <div class="filter-group search-group">
+                <label for="search">Search</label>
+                <input
+                    id="search"
+                    type="text"
+                    name="search"
+                    value="{{ search }}"
+                    placeholder="Search title, subject, or description"
+                >
+            </div>
+
+            <div class="filter-group">
+                <label for="status">Status</label>
+                <select id="status" name="status">
+                    <option value="">All Statuses</option>
+                    <option value="Pending" {% if selected_status == 'Pending' %}selected{% endif %}>Pending</option>
+                    <option value="In Progress" {% if selected_status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                    <option value="Completed" {% if selected_status == 'Completed' %}selected{% endif %}>Completed</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="priority">Priority</label>
+                <select id="priority" name="priority">
+                    <option value="">All Priorities</option>
+                    <option value="High" {% if selected_priority == 'High' %}selected{% endif %}>High</option>
+                    <option value="Medium" {% if selected_priority == 'Medium' %}selected{% endif %}>Medium</option>
+                    <option value="Low" {% if selected_priority == 'Low' %}selected{% endif %}>Low</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="sort">Sort By</label>
+                <select id="sort" name="sort">
+                    <option value="due_date" {% if selected_sort == 'due_date' %}selected{% endif %}>Due Date</option>
+                    <option value="title" {% if selected_sort == 'title' %}selected{% endif %}>Title</option>
+                    <option value="priority" {% if selected_sort == 'priority' %}selected{% endif %}>Priority</option>
+                    <option value="status" {% if selected_sort == 'status' %}selected{% endif %}>Status</option>
+                    <option value="newest" {% if selected_sort == 'newest' %}selected{% endif %}>Newest</option>
+                </select>
+            </div>
+
+            <div class="filter-actions">
+                <button type="submit" class="btn btn-primary">Apply Filters</button>
+                <a href="{% url 'assignment_list' %}" class="btn btn-secondary">Clear</a>
+            </div>
+
+        </form>
+
+    </section>
+
+    <section class="panel">
+
+        <div class="panel-header">
+            <div>
+                <p class="eyebrow">TEACHER ASSIGNED WORK</p>
+                <h2>My Assignments</h2>
+            </div>
+
+            <span class="status-badge">
+                {{ assignments|length }} Results
+            </span>
+        </div>
 
         <div class="assignment-list">
 
@@ -37,6 +91,7 @@
                     <div class="assignment-main">
 
                         <div class="assignment-title-row">
+
                             <div>
                                 <p class="eyebrow">{{ assignment.subject }}</p>
                                 <h2>{{ assignment.title }}</h2>
@@ -45,6 +100,7 @@
                             <span class="status-badge">
                                 {{ assignment.status }}
                             </span>
+
                         </div>
 
                         {% if assignment.description %}
@@ -53,14 +109,14 @@
                             </p>
                         {% else %}
                             <p class="assignment-description muted">
-                                No description added for this assignment.
+                                No instructions provided.
                             </p>
                         {% endif %}
 
                         <div class="assignment-details">
 
                             <div>
-                                <span class="detail-label">Due Date</span>
+                                <span class="detail-label">Deadline</span>
                                 <strong>{{ assignment.due_date|date:"M d, Y" }}</strong>
                             </div>
 
@@ -70,73 +126,136 @@
                             </div>
 
                             <div>
-                                <span class="detail-label">Status</span>
-                                <strong>{{ assignment.status }}</strong>
+                                <span class="detail-label">Assigned By</span>
+                                <strong>
+                                    {% if assignment.assigned_by %}
+                                        {{ assignment.assigned_by.username }}
+                                    {% else %}
+                                        Teacher
+                                    {% endif %}
+                                </strong>
                             </div>
+
+                        </div>
+
+                        <div class="assignment-actions">
+
+                            <a
+                                href="{% url 'edit_assignment' assignment.id %}"
+                                class="btn btn-primary"
+                            >
+                                Update Progress
+                            </a>
+
+                            {% if assignment.assignment_file %}
+                                <a
+                                    href="{{ assignment.assignment_file.url }}"
+                                    target="_blank"
+                                    class="btn btn-secondary"
+                                >
+                                    Open File
+                                </a>
+                            {% endif %}
 
                         </div>
 
                     </div>
 
-                    <div class="assignment-actions">
-
-                        <a
-                            href="{% url 'edit_assignment' assignment.id %}"
-                            class="btn btn-secondary"
-                        >
-                            Edit
-                        </a>
-
-                        <form
-                            method="POST"
-                            action="{% url 'delete_assignment' assignment.id %}"
-                        >
-                            {% csrf_token %}
-
-                            <button
-                                type="submit"
-                                class="btn btn-danger"
-                                onclick="return confirm('Are you sure you want to delete this assignment?');"
-                            >
-                                Delete
-                            </button>
-
-                        </form>
-
-                    </div>
-
                 </article>
+
+            {% empty %}
+
+                <div class="empty-state">
+                    <div class="empty-state-content">
+                        <p class="eyebrow">NO ASSIGNMENTS</p>
+                        <h2>No Assignments Yet</h2>
+                        <p>Your teacher has not assigned any work to you yet.</p>
+                    </div>
+                </div>
 
             {% endfor %}
 
         </div>
 
-    {% else %}
-
-        <div class="empty-state">
-
-            <div class="empty-state-content">
-                <p class="eyebrow">YOUR WORKSPACE</p>
-
-                <h2>No Assignments Yet</h2>
-
-                <p>
-                    You have not added any assignments yet.
-                    Create your first assignment to start organizing your academic work.
-                </p>
-
-                <a
-                    href="{% url 'add_assignment' %}"
-                    class="btn btn-primary"
-                >
-                    Add Your First Assignment
-                </a>
-            </div>
-
-        </div>
-
-    {% endif %}
+    </section>
 
 </section>
+
+<style>
+
+.assignment-filters {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    gap: 14px;
+    align-items: end;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.filter-group label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #475569;
+}
+
+.filter-group input,
+.filter-group select {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid #dbe1e8;
+    border-radius: 10px;
+    background: #ffffff;
+    box-sizing: border-box;
+}
+
+.filter-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.assignment-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #e5e7eb;
+}
+
+@media (max-width: 1000px) {
+    .assignment-filters {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .search-group {
+        grid-column: span 2;
+    }
+}
+
+@media (max-width: 650px) {
+    .assignment-filters {
+        grid-template-columns: 1fr;
+    }
+
+    .search-group {
+        grid-column: span 1;
+    }
+
+    .filter-actions,
+    .assignment-actions {
+        width: 100%;
+    }
+
+    .filter-actions .btn,
+    .assignment-actions .btn {
+        flex: 1;
+    }
+}
+
+</style>
 
 {% endblock %}

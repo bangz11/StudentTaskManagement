@@ -1,115 +1,101 @@
-﻿{% extends 'assignments/base.html' %}
+{% extends 'assignments/base.html' %}
 
-{% block title %}Edit Assignment | StudyFlow{% endblock %}
+{% block title %}Update Progress | StudyFlow{% endblock %}
 
 {% block content %}
 
 <section class="page-container">
 
-    <div class="form-page">
-
-        <div class="form-intro">
-            <p class="eyebrow">EDIT ASSIGNMENT</p>
-            <h1>Update Your Assignment</h1>
-            <p>
-                Make changes to your assignment information and save them
-                when you are finished.
-            </p>
+    <div class="page-header">
+        <div>
+            <p class="eyebrow">STUDENT WORKSPACE / PROGRESS</p>
+            <h1>Update Progress</h1>
+            <p>{{ assignment.title }}</p>
         </div>
 
-        <div class="form-card">
-
-            <form method="POST">
-                {% csrf_token %}
-
-                <div class="form-grid">
-
-                    <div class="form-group full-width">
-                        <label for="title">Assignment Title</label>
-                        <input
-                            type="text"
-                            id="title"
-                            name="title"
-                            value="{{ assignment.title }}"
-                            required
-                        >
-                    </div>
-
-                    <div class="form-group">
-                        <label for="subject">Subject</label>
-                        <input
-                            type="text"
-                            id="subject"
-                            name="subject"
-                            value="{{ assignment.subject }}"
-                            required
-                        >
-                    </div>
-
-                    <div class="form-group">
-                        <label for="due_date">Due Date</label>
-                        <input
-                            type="date"
-                            id="due_date"
-                            name="due_date"
-                            value="{{ assignment.due_date|date:'Y-m-d' }}"
-                            required
-                        >
-                    </div>
-
-                    <div class="form-group full-width">
-                        <label for="description">Description</label>
-                        <textarea
-                            id="description"
-                            name="description"
-                            rows="6"
-                            placeholder="Add details about this assignment..."
-                        >{{ assignment.description }}</textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="priority">Priority</label>
-                        <select id="priority" name="priority" required>
-                            <option value="Low" {% if assignment.priority == 'Low' %}selected{% endif %}>Low</option>
-                            <option value="Medium" {% if assignment.priority == 'Medium' %}selected{% endif %}>Medium</option>
-                            <option value="High" {% if assignment.priority == 'High' %}selected{% endif %}>High</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="status">Status</label>
-                        <select id="status" name="status" required>
-                            <option value="Pending" {% if assignment.status == 'Pending' %}selected{% endif %}>Pending</option>
-                            <option value="In Progress" {% if assignment.status == 'In Progress' %}selected{% endif %}>In Progress</option>
-                            <option value="Completed" {% if assignment.status == 'Completed' %}selected{% endif %}>Completed</option>
-                        </select>
-                    </div>
-
-                </div>
-
-                <div class="form-actions">
-
-                    <a
-                        href="{% url 'assignment_list' %}"
-                        class="btn btn-secondary"
-                    >
-                        Back to Assignments
-                    </a>
-
-                    <button
-                        type="submit"
-                        class="btn btn-primary"
-                    >
-                        Save Changes
-                    </button>
-
-                </div>
-
-            </form>
-
-        </div>
-
+        <a href="{% url 'assignment_list' %}" class="btn btn-secondary">
+            Back to Assignments
+        </a>
     </div>
+
+    <section class="panel">
+
+        <div class="assignment-details">
+
+            <div>
+                <span class="detail-label">Subject</span>
+                <strong>{{ assignment.subject }}</strong>
+            </div>
+
+            <div>
+                <span class="detail-label">Deadline</span>
+                <strong>{{ assignment.due_date|date:"M d, Y" }}</strong>
+            </div>
+
+            <div>
+                <span class="detail-label">Priority</span>
+                <strong>{{ assignment.priority }}</strong>
+            </div>
+
+            <div>
+                <span class="detail-label">Assigned By</span>
+                <strong>
+                    {% if assignment.assigned_by %}
+                        {{ assignment.assigned_by.username }}
+                    {% else %}
+                        Teacher
+                    {% endif %}
+                </strong>
+            </div>
+
+        </div>
+
+        {% if assignment.description %}
+            <div style="margin-top: 25px;">
+                <span class="detail-label">Instructions</span>
+                <p class="assignment-description">
+                    {{ assignment.description }}
+                </p>
+            </div>
+        {% endif %}
+
+        <form method="post" style="margin-top: 30px;">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="status">Progress Status</label>
+
+                <select id="status" name="status" required>
+                    <option value="Pending"
+                        {% if assignment.status == 'Pending' %}selected{% endif %}>
+                        Pending
+                    </option>
+
+                    <option value="In Progress"
+                        {% if assignment.status == 'In Progress' %}selected{% endif %}>
+                        In Progress
+                    </option>
+
+                    <option value="Completed"
+                        {% if assignment.status == 'Completed' %}selected{% endif %}>
+                        Completed
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-actions" style="margin-top: 25px;">
+                <a href="{% url 'assignment_list' %}" class="btn btn-secondary">
+                    Cancel
+                </a>
+
+                <button type="submit" class="btn btn-primary">
+                    Save Progress
+                </button>
+            </div>
+
+        </form>
+
+    </section>
 
 </section>
 

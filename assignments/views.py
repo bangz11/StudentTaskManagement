@@ -150,28 +150,15 @@ def assignment_list(request):
 
 def add_assignment(request):
     if not request.user.is_authenticated:
-        return redirect('login')
+        return redirect("login")
 
-    if request.method == 'POST':
-        Assignment.objects.create(
-            user=request.user,
-            title=request.POST.get('title'),
-            subject=request.POST.get('subject'),
-            description=request.POST.get('description'),
-            due_date=request.POST.get('due_date'),
-            priority=request.POST.get('priority'),
-            status=request.POST.get('status')
-        )
-
-        messages.success(request, 'Assignment added successfully.')
-        return redirect('assignment_list')
-
-    return render(request, 'assignments/add_assignment.html')
+    messages.info(request, "Assignments are created by your teacher.")
+    return redirect("assignment_list")
 
 
 def edit_assignment(request, assignment_id):
     if not request.user.is_authenticated:
-        return redirect('login')
+        return redirect("login")
 
     assignment = get_object_or_404(
         Assignment,
@@ -179,20 +166,20 @@ def edit_assignment(request, assignment_id):
         user=request.user
     )
 
-    if request.method == 'POST':
-        assignment.title = request.POST.get('title')
-        assignment.subject = request.POST.get('subject')
-        assignment.description = request.POST.get('description')
-        assignment.due_date = request.POST.get('due_date')
-        assignment.priority = request.POST.get('priority')
-        assignment.status = request.POST.get('status')
-        assignment.save()
+    if request.method == "POST":
+        status = request.POST.get("status")
 
-        messages.success(request, 'Assignment updated successfully.')
-        return redirect('assignment_list')
+        if status in ["Pending", "In Progress", "Completed"]:
+            assignment.status = status
+            assignment.save(update_fields=["status", "updated_at"])
+            messages.success(request, "Assignment progress updated successfully.")
+        else:
+            messages.error(request, "Invalid status.")
 
-    return render(request, 'assignments/edit_assignment.html', {
-        'assignment': assignment
+        return redirect("assignment_list")
+
+    return render(request, "assignments/edit_assignment.html", {
+        "assignment": assignment
     })
 
 
@@ -218,7 +205,7 @@ from django.contrib.auth.decorators import user_passes_test
 def teacher_required(view_func):
     return user_passes_test(
         lambda user: user.is_authenticated and user.is_staff,
-        login_url='login'
+        login_url='teacher_login'
     )(view_func)
 
 
@@ -228,6 +215,21 @@ def teacher_dashboard(request):
         is_staff=False,
         is_superuser=False
     ).order_by('username')
+
+    for student in students:
+        student.assignment_count = Assignment.objects.filter(
+            user=student
+        ).count()
+
+        student.completed_count = Assignment.objects.filter(
+            user=student,
+            status='Completed'
+        ).count()
+
+        student.pending_count = Assignment.objects.filter(
+            user=student,
+            status='Pending'
+        ).count()
 
     total_students = students.count()
     total_assignments = Assignment.objects.count()
@@ -287,3 +289,250 @@ def teacher_student_detail(request, user_id):
 def explore(request):
     return render(request, 'assignments/explore.html')
 
+
+
+def student_login(request):
+    if request.user.is_authenticated:
+        if request.user.is_staff:
+            return redirect('teacher_dashboard')
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '')
+
+        user = authenticate(
+            request,
+            username=username,
+            password=password
+        )
+
+        if user is not None and not user.is_staff:
+            login(request, user)
+            return redirect('dashboard')
+
+        messages.error(
+            request,
+            'Invalid student username or password.'
+        )
+
+    return render(request, 'assignments/student_login.html')
+
+
+def teacher_login(request):
+    if request.user.is_authenticated:
+        if request.user.is_staff:
+            return redirect('teacher_dashboard')
+        return redirect('dashboard')
+
+    if request.method == 'POST':
+        username = request.POST.get('username', '').strip()
+        password = request.POST.get('password', '')
+
+        user = authenticate(
+            request,
+            username=username,
+            password=password
+        )
+
+        if user is not None and user.is_staff:
+            login(request, user)
+            return redirect('teacher_dashboard')
+
+        messages.error(
+            request,
+            'Teacher access denied. Please use a teacher account.'
+        )
+
+    return render(request, 'assignments/teacher_login.html')
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from .models import Assignment
+
+def remove_assignment_file(request, assignment_id):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    assignment = get_object_or_404(
+        Assignment,
+        id=assignment_id,
+        user=request.user
+    )
+
+    if request.method == 'POST':
+        if assignment.assignment_file:
+            assignment.assignment_file.delete(save=False)
+
+        assignment.assignment_file = None
+        assignment.file_text = ''
+        assignment.save(update_fields=['assignment_file', 'file_text'])
+
+        messages.success(request, 'Assignment file removed successfully.')
+
+    return redirect('assignment_list')
+
+@teacher_required
+def teacher_add_assignment(request, user_id):
+    student = get_object_or_404(
+        User,
+        id=user_id,
+        is_staff=False,
+        is_superuser=False
+    )
+
+    if request.method == 'POST':
+        uploaded_file = request.FILES.get('assignment_file')
+
+        title = request.POST.get('title', '').strip()
+        subject = request.POST.get('subject', '').strip()
+        description = request.POST.get('description', '').strip()
+        due_date = request.POST.get('due_date')
+        priority = request.POST.get('priority', 'Medium')
+        status = request.POST.get('status', 'Pending')
+
+        if uploaded_file:
+            allowed_extensions = ['.pdf', '.docx', '.png', '.jpg', '.jpeg']
+            extension = Path(uploaded_file.name).suffix.lower()
+
+            if extension not in allowed_extensions:
+                messages.error(
+                    request,
+                    'Please upload a PDF, DOCX, JPG, JPEG, or PNG file.'
+                )
+                return redirect(
+                    'teacher_add_assignment',
+                    user_id=student.id
+                )
+
+            if uploaded_file.size > 10 * 1024 * 1024:
+                messages.error(
+                    request,
+                    'File must be smaller than 10 MB.'
+                )
+                return redirect(
+                    'teacher_add_assignment',
+                    user_id=student.id
+                )
+
+        if not title or not subject or not due_date:
+            messages.error(
+                request,
+                'Please fill in the title, subject, and due date.'
+            )
+            return redirect(
+                'teacher_add_assignment',
+                user_id=student.id
+            )
+
+        file_text = ''
+
+        if uploaded_file:
+            file_text = extract_file_text(uploaded_file)
+
+        Assignment.objects.create(
+            user=student,
+            assigned_by=request.user,
+            title=title,
+            subject=subject,
+            description=description,
+            assignment_file=uploaded_file,
+            file_text=file_text,
+            due_date=due_date,
+            priority=priority,
+            status=status
+        )
+
+        messages.success(
+            request,
+            f'Assignment created for {student.username}.'
+        )
+
+        return redirect(
+            'teacher_student_detail',
+            user_id=student.id
+        )
+
+    return render(
+        request,
+        'assignments/teacher_add_assignment.html',
+        {
+            'student': student
+        }
+    )
+
+
+
+@teacher_required
+def teacher_create_assignment(request, user_id):
+    student = get_object_or_404(
+        User,
+        id=user_id,
+        is_staff=False,
+        is_superuser=False
+    )
+
+    if request.method == 'POST':
+        uploaded_file = request.FILES.get('assignment_file')
+
+        title = request.POST.get('title', '').strip()
+        subject = request.POST.get('subject', '').strip()
+        description = request.POST.get('description', '').strip()
+        due_date = request.POST.get('due_date')
+        priority = request.POST.get('priority', 'Medium')
+        status = request.POST.get('status', 'Pending')
+
+        file_text = ''
+
+        if uploaded_file:
+            allowed_extensions = ['.pdf', '.docx', '.png', '.jpg', '.jpeg']
+            extension = Path(uploaded_file.name).suffix.lower()
+
+            if extension not in allowed_extensions:
+                messages.error(
+                    request,
+                    'Please upload a PDF, DOCX, JPG, JPEG, or PNG file.'
+                )
+                return redirect('teacher_create_assignment', user_id=student.id)
+
+            if uploaded_file.size > 10 * 1024 * 1024:
+                messages.error(
+                    request,
+                    'File must be smaller than 10 MB.'
+                )
+                return redirect('teacher_create_assignment', user_id=student.id)
+
+            file_text = extract_file_text(uploaded_file)
+
+        if not title or not subject or not due_date:
+            messages.error(
+                request,
+                'Please fill in the title, subject, and deadline.'
+            )
+            return redirect('teacher_create_assignment', user_id=student.id)
+
+        Assignment.objects.create(
+            user=student,
+            assigned_by=request.user,
+            title=title,
+            subject=subject,
+            description=description,
+            due_date=due_date,
+            priority=priority,
+            status=status,
+            assignment_file=uploaded_file,
+            file_text=file_text
+        )
+
+        messages.success(
+            request,
+            f'Assignment assigned to {student.username} successfully.'
+        )
+
+        return redirect(
+            'teacher_student_detail',
+            user_id=student.id
+        )
+
+    return render(request, 'assignments/teacher_create_assignment.html', {
+        'student': student
+    })
