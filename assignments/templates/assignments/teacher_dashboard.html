@@ -1,4 +1,4 @@
-{% extends 'assignments/base.html' %}
+﻿{% extends 'assignments/base.html' %}
 
 {% block title %}Teacher Dashboard | StudyFlow{% endblock %}
 
@@ -150,6 +150,63 @@
 
     </section>
 
+    <!-- Assigned Work -->
+    <section class="panel">
+        <div class="panel-header">
+            <div>
+                <p class="eyebrow">ASSIGNED WORK</p>
+                <h2>Recent Assignments</h2>
+                <p>View assignments created by you and the students receiving them.</p>
+            </div>
+
+            <a href="{% url 'teacher_assign' %}" class="btn btn-primary">
+                + Assign Work
+            </a>
+        </div>
+
+        <div style="display:grid; gap:16px; margin-top:20px;">
+            {% for assignment in assignments %}
+                <article style="border:1px solid #ddd; border-radius:12px; padding:20px;">
+                    <div style="display:flex; justify-content:space-between; gap:15px; flex-wrap:wrap;">
+                        <div>
+                            <h3>{{ assignment.title }}</h3>
+                            <p>{{ assignment.subject }}</p>
+                        </div>
+
+                        <strong>{{ assignment.status }}</strong>
+                    </div>
+
+                    <p style="margin-top:12px;">
+                        <strong>Assigned to:</strong> {{ assignment.user.username }}
+                    </p>
+
+                    <p>
+                        <strong>Deadline:</strong> {{ assignment.due_date }}
+                    </p>
+
+                    <p>
+                        <strong>Priority:</strong> {{ assignment.priority }}
+                    </p>
+
+                    <p>
+                        <strong>Submission:</strong> {{ assignment.submission_status }}
+                    </p>
+
+                    <a
+                        href="{% url 'teacher_student_detail' assignment.user.id %}"
+                        class="btn btn-secondary"
+                        style="display:inline-block; margin-top:12px;"
+                    >
+                        View Student Progress
+                    </a>
+                </article>
+            {% empty %}
+                <div class="empty-state">
+                    <p>No assignments have been created yet.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
     <!-- Quick Actions -->
 
     <section class="panel">
@@ -376,3 +433,4 @@
 </style>
 
 {% endblock %}
+

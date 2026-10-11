@@ -19,7 +19,7 @@
         </div>
 
         <a href="{% url 'teacher_students' %}" class="btn btn-secondary">
-            ? Back to Students
+             Back to Students
         </a>
     </div>
 
@@ -30,6 +30,13 @@
                 <p class="eyebrow">STUDENT OVERVIEW</p>
                 <h2>Academic Progress</h2>
             </div>
+
+            <a
+                href="{% url 'teacher_add_assignment' student.id %}"
+                class="btn btn-primary"
+            >
+                + Assign Assignment
+            </a>
         </div>
 
         <div class="stats-grid">
@@ -93,17 +100,13 @@
                         </div>
 
                         {% if assignment.description %}
-
                             <p class="assignment-description">
                                 {{ assignment.description }}
                             </p>
-
                         {% else %}
-
                             <p class="assignment-description muted">
                                 No description provided.
                             </p>
-
                         {% endif %}
 
                         <div class="assignment-details">
@@ -130,13 +133,48 @@
 
                             <div>
                                 <span class="detail-label">
-                                    Status
+                                    Progress
                                 </span>
 
                                 <strong>
                                     {{ assignment.status }}
                                 </strong>
                             </div>
+
+                        </div>
+
+                        <div style="margin-top: 25px; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+
+                            <h3>Student Submission</h3>
+
+                            <p>
+                                <strong>Submission Status:</strong>
+                                {{ assignment.submission_status }}
+                            </p>
+
+                            {% if assignment.submitted_at %}
+                                <p>
+                                    <strong>Submitted At:</strong>
+                                    {{ assignment.submitted_at }}
+                                </p>
+                            {% endif %}
+
+                            {% if assignment.submission_file %}
+                                <p style="margin-top: 15px;">
+                                    <a
+                                        href="{{ assignment.submission_file.url }}"
+                                        target="_blank"
+                                    >
+                                        View / Download Student Submission
+                                    </a>
+                                </p>
+                            {% else %}
+                                <p>
+                                    No submission uploaded yet.
+                                </p>
+                            {% endif %}
+
+{% if assignment.submission_status == "Submitted" %}    <form method="post" action="{% url 'review_assignment' assignment.id %}" style="margin-top:15px;">        {% csrf_token %}        <button type="submit" class="btn btn-primary">Mark as Reviewed</button>    </form>{% elif assignment.submission_status == "Reviewed" %}    <p style="margin-top:15px; font-weight:700;"> Submission Reviewed</p>{% endif %}
 
                         </div>
 
@@ -157,15 +195,14 @@
                         <h2>No Assignments Yet</h2>
 
                         <p>
-                            This student has not added any assignments
-                            to StudyFlow yet.
+                            This student has no assignments from this teacher yet.
                         </p>
 
                         <a
-                            href="{% url 'teacher_students' %}"
-                            class="btn btn-secondary"
+                            href="{% url 'teacher_add_assignment' student.id %}"
+                            class="btn btn-primary"
                         >
-                            ? Back to Students
+                            + Assign Assignment
                         </a>
 
                     </div>
@@ -181,4 +218,9 @@
 </section>
 
 {% endblock %}
+
+
+
+
+
 

@@ -1,5 +1,6 @@
-from django.urls import path
+﻿from django.urls import path
 from . import views
+from .ai_assistant import ai_assistant
 from .api_views import AssignmentListCreateAPI, AssignmentDetailAPI
 
 urlpatterns = [
@@ -13,6 +14,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
 
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('ai-assistant/', ai_assistant, name='ai_assistant'),
     path('explore/', views.explore, name='explore'),
 
     path('assignments/', views.assignment_list, name='assignment_list'),
@@ -20,18 +22,19 @@ urlpatterns = [
     path('assignments/<int:assignment_id>/edit/', views.edit_assignment, name='edit_assignment'),
     path('assignments/<int:assignment_id>/delete/', views.delete_assignment, name='delete_assignment'),
     path('assignments/<int:assignment_id>/remove-file/', views.remove_assignment_file, name='remove_assignment_file'),
+    path('assignments/<int:assignment_id>/submit/', views.submit_assignment, name='submit_assignment'),
+    path('assignments/<int:assignment_id>/review/', views.review_assignment, name='review_assignment'),
 
     path('teacher/dashboard/', views.teacher_dashboard, name='teacher_dashboard'),
     path('teacher/students/', views.teacher_students, name='teacher_students'),
     path('teacher/students/<int:user_id>/', views.teacher_student_detail, name='teacher_student_detail'),
     path('teacher/students/<int:user_id>/assign/', views.teacher_create_assignment, name='teacher_create_assignment'),
-    
-    path(
-    'teacher/students/<int:user_id>/add-assignment/',
-    views.teacher_add_assignment,
-    name='teacher_add_assignment'
-),
+    path('teacher/assign/', views.teacher_create_assignment, name='teacher_assign'),
+    path('teacher/students/<int:user_id>/add-assignment/', views.teacher_add_assignment, name='teacher_add_assignment'),
 
     path('api/assignments/', AssignmentListCreateAPI.as_view(), name='api_assignment_list'),
     path('api/assignments/<int:pk>/', AssignmentDetailAPI.as_view(), name='api_assignment_detail'),
 ]
+
+
+

@@ -1,3 +1,6 @@
+from dotenv import load_dotenv
+import os
+load_dotenv()
 """
 Django settings for studenttask project.
 
@@ -131,3 +134,5 @@ MAILERS = {
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')

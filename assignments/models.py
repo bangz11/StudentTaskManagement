@@ -15,12 +15,33 @@ class Assignment(models.Model):
         ('Completed', 'Completed'),
     ]
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    SUBMISSION_STATUS_CHOICES = [
+        ('Not Submitted', 'Not Submitted'),
+        ('Submitted', 'Submitted'),
+        ('Reviewed', 'Reviewed'),
+    ]
+
+    # Student who receives the assignment
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='assignments'
+    )
+
+    # Teacher who created/assigned the assignment
+    assigned_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='assigned_work'
+    )
 
     title = models.CharField(max_length=200)
     subject = models.CharField(max_length=100)
     description = models.TextField(blank=True)
 
+    # Teacher's assignment/instruction file
     assignment_file = models.FileField(
         upload_to='assignments/',
         blank=True,
@@ -44,6 +65,24 @@ class Assignment(models.Model):
         max_length=20,
         choices=STATUS_CHOICES,
         default='Pending'
+    )
+
+    # Student's completed work
+    submission_file = models.FileField(
+        upload_to='submissions/',
+        blank=True,
+        null=True
+    )
+
+    submission_status = models.CharField(
+        max_length=20,
+        choices=SUBMISSION_STATUS_CHOICES,
+        default='Not Submitted'
+    )
+
+    submitted_at = models.DateTimeField(
+        null=True,
+        blank=True
     )
 
     created_at = models.DateTimeField(auto_now_add=True)

@@ -1,0 +1,37 @@
+{% extends "assignments/base.html" %}
+
+{% block content %}
+<div style="max-width: 850px; margin: 40px auto; padding: 25px;">
+    <h1>StudyFlow AI Assistant</h1>
+
+    <p>
+        Ask about your assignments, deadlines, priorities, or how to get started.
+    </p>
+
+    <form method="post" style="margin-top: 25px;">
+        {% csrf_token %}
+
+        <textarea
+            name="question"
+            rows="4"
+            placeholder="Example: What assignment should I work on first?"
+            style="width: 100%; padding: 12px; border-radius: 8px;"
+            required
+        >{{ question }}</textarea>
+
+        <button
+            type="submit"
+            style="margin-top: 12px; padding: 10px 20px; border-radius: 8px; cursor: pointer;"
+        >
+            Ask StudyFlow AI
+        </button>
+    </form>
+
+    {% if answer %}
+    <div style="margin-top: 30px; padding: 20px; border-radius: 10px;">
+        <h2>StudyFlow Assistant</h2>
+        <p style="white-space: pre-line;">{{ answer }}</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

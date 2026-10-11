@@ -1,102 +1,120 @@
-{% extends 'assignments/base.html' %}
-
-{% block title %}Update Progress | StudyFlow{% endblock %}
+{% extends "assignments/base.html" %}
 
 {% block content %}
 
-<section class="page-container">
+<div style="max-width: 850px; margin: 40px auto; padding: 25px;">
 
-    <div class="page-header">
-        <div>
-            <p class="eyebrow">STUDENT WORKSPACE / PROGRESS</p>
-            <h1>Update Progress</h1>
-            <p>{{ assignment.title }}</p>
-        </div>
+    <p style="color: #2563eb; font-weight: 700;">
+        STUDENT WORKSPACE
+    </p>
 
-        <a href="{% url 'assignment_list' %}" class="btn btn-secondary">
-            Back to Assignments
-        </a>
+    <h1>{{ assignment.title }}</h1>
+
+    <p>
+        <strong>{{ assignment.subject }}</strong>
+    </p>
+
+    <p style="margin-top: 20px;">
+        {{ assignment.description }}
+    </p>
+
+    <div style="margin-top: 25px; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+        <p><strong>Deadline:</strong> {{ assignment.due_date }}</p>
+        <p><strong>Priority:</strong> {{ assignment.priority }}</p>
+        <p><strong>Current Progress:</strong> {{ assignment.status }}</p>
+        <p><strong>Submission:</strong> {{ assignment.submission_status }}</p>
+
+        {% if assignment.assignment_file %}
+            <p style="margin-top: 15px;">
+                <a href="{{ assignment.assignment_file.url }}" target="_blank">
+                    View / Download Teacher's Assignment File
+                </a>
+            </p>
+        {% endif %}
     </div>
 
-    <section class="panel">
+    <div style="margin-top: 30px; padding: 25px; border: 1px solid #ddd; border-radius: 10px;">
 
-        <div class="assignment-details">
+        <h2>Update Progress</h2>
 
-            <div>
-                <span class="detail-label">Subject</span>
-                <strong>{{ assignment.subject }}</strong>
-            </div>
-
-            <div>
-                <span class="detail-label">Deadline</span>
-                <strong>{{ assignment.due_date|date:"M d, Y" }}</strong>
-            </div>
-
-            <div>
-                <span class="detail-label">Priority</span>
-                <strong>{{ assignment.priority }}</strong>
-            </div>
-
-            <div>
-                <span class="detail-label">Assigned By</span>
-                <strong>
-                    {% if assignment.assigned_by %}
-                        {{ assignment.assigned_by.username }}
-                    {% else %}
-                        Teacher
-                    {% endif %}
-                </strong>
-            </div>
-
-        </div>
-
-        {% if assignment.description %}
-            <div style="margin-top: 25px;">
-                <span class="detail-label">Instructions</span>
-                <p class="assignment-description">
-                    {{ assignment.description }}
-                </p>
-            </div>
-        {% endif %}
-
-        <form method="post" style="margin-top: 30px;">
+        <form method="post">
             {% csrf_token %}
 
-            <div class="form-group">
-                <label for="status">Progress Status</label>
+            <label for="status">
+                <strong>Assignment Status</strong>
+            </label>
 
-                <select id="status" name="status" required>
-                    <option value="Pending"
-                        {% if assignment.status == 'Pending' %}selected{% endif %}>
-                        Pending
-                    </option>
+            <select
+                name="status"
+                id="status"
+                style="display:block; width:100%; padding:12px; margin-top:8px; margin-bottom:20px;"
+            >
+                <option value="Pending" {% if assignment.status == "Pending" %}selected{% endif %}>
+                    Pending
+                </option>
 
-                    <option value="In Progress"
-                        {% if assignment.status == 'In Progress' %}selected{% endif %}>
-                        In Progress
-                    </option>
+                <option value="In Progress" {% if assignment.status == "In Progress" %}selected{% endif %}>
+                    In Progress
+                </option>
 
-                    <option value="Completed"
-                        {% if assignment.status == 'Completed' %}selected{% endif %}>
-                        Completed
-                    </option>
-                </select>
-            </div>
+                <option value="Completed" {% if assignment.status == "Completed" %}selected{% endif %}>
+                    Completed
+                </option>
+            </select>
 
-            <div class="form-actions" style="margin-top: 25px;">
-                <a href="{% url 'assignment_list' %}" class="btn btn-secondary">
-                    Cancel
-                </a>
-
-                <button type="submit" class="btn btn-primary">
-                    Save Progress
-                </button>
-            </div>
-
+            <button
+                type="submit"
+                style="padding:12px 20px; background:#2563eb; color:white; border:0; border-radius:8px; cursor:pointer;"
+            >
+                Save Progress
+            </button>
         </form>
 
-    </section>
+    </div>
 
-</section>
+    <div style="margin-top: 30px; padding: 25px; border: 1px solid #ddd; border-radius: 10px;">
+
+        <h2>Submit Completed Assignment</h2>
+
+        <p>
+            Upload your completed work and submit it to your teacher.
+        </p>
+
+        <form
+            method="post"
+            action="{% url 'submit_assignment' assignment.id %}"
+            enctype="multipart/form-data"
+            style="margin-top:20px;"
+        >
+            {% csrf_token %}
+
+            <input
+                type="file"
+                name="submission_file"
+                accept=".pdf,.docx,.png,.jpg,.jpeg"
+                required
+                style="display:block; margin-bottom:15px;"
+            >
+
+            <button
+                type="submit"
+                style="padding:12px 20px; background:#16a34a; color:white; border:0; border-radius:8px; cursor:pointer;"
+            >
+                Submit Assignment
+            </button>
+        </form>
+
+        {% if assignment.submission_file %}
+            <p style="margin-top:20px;">
+                <strong>Submitted file:</strong>
+                <a href="{{ assignment.submission_file.url }}" target="_blank">
+                    View Submission
+                </a>
+            </p>
+        {% endif %}
+
+    </div>
+
+</div>
 
 {% endblock %}
