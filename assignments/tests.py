@@ -55,7 +55,7 @@ class AssignmentTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Database Assignment')
 
-    def test_user_can_create_assignment(self):
+    def test_user_cannot_create_assignment(self):
         self.client.login(
             username='student1',
             password='testpass123'
@@ -74,7 +74,7 @@ class AssignmentTests(TestCase):
         )
 
         self.assertEqual(response.status_code, 302)
-        self.assertTrue(
+        self.assertFalse(
             Assignment.objects.filter(
                 title='Web Development',
                 user=self.user
@@ -185,6 +185,7 @@ class TeacherPortalTests(TestCase):
 
         Assignment.objects.create(
             user=self.student,
+            assigned_by=self.teacher,
             title='Test Assignment',
             subject='Information Technology',
             description='Teacher test assignment',
@@ -237,3 +238,4 @@ class TeacherPortalTests(TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertIn('/login/', response.url)
+
